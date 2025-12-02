@@ -43,10 +43,7 @@ const errorRotateTransport = new DailyRotateFile({
 
 export const winstonConfig = {
   level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   handleExceptions: true,
   handleRejections: true,
   exitOnError: false,

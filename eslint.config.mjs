@@ -18,7 +18,14 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['**/.eslintrc.js', 'src/i18n/i18n.types.ts'],
+    ignores: [
+      '**/.eslintrc.js',
+      'src/i18n/i18n.types.ts',
+      'dist',
+      'node_modules',
+      'build',
+      'coverage',
+    ],
   },
   ...compat.extends(
     'eslint:recommended',
@@ -50,6 +57,9 @@ export default [
     },
 
     rules: {
+      'require-jsdoc': 'off',
+      'quotes': ['error', 'single'],
+
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -66,15 +76,13 @@ export default [
       'jest/no-identical-title': 'error',
       'jest/prefer-to-have-length': 'warn',
       'jest/valid-expect': 'error',
-
+      'jest/expect-expect': 'off',
       'prettier/prettier': [
         'error',
         {
           endOfLine: 'auto',
         },
       ],
-
-      'jest/expect-expect': 'off',
     },
   },
 ];
