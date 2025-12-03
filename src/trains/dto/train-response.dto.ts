@@ -28,4 +28,3 @@ export class TrainResponseDto {
   @ApiProperty()
   updatedAt: Date;
 }
-

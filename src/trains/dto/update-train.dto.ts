@@ -27,4 +27,3 @@ export class UpdateTrainDto {
   @IsOptional()
   totalSeats?: string;
 }
-
