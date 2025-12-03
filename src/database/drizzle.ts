@@ -6,6 +6,11 @@ import { ConfigService } from '@nestjs/config';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const postgres = require('postgres');
 
+/**
+ * Create a new database instance
+ * @param configService - The config service
+ * @returns The database instance
+ */
 export const createDatabase = (configService: ConfigService) => {
   const databaseUrl = configService.get<string>('database.url');
 
@@ -16,3 +21,9 @@ export const createDatabase = (configService: ConfigService) => {
   const client = postgres(databaseUrl);
   return drizzle(client, { schema });
 };
+
+/**
+ * The database type
+ * @returns The database type
+ */
+export type DB = ReturnType<typeof createDatabase>;

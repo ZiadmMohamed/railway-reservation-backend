@@ -1,5 +1,4 @@
 // Dynamic schema loader - automatically imports all *.schema.ts files
-// Similar to TypeORM's entity auto-discovery
 // Convention: All schema files must be named *.schema.ts and located in **/schemas/*.schema.ts
 //
 // How it works:
@@ -54,7 +53,7 @@ function findSchemaFiles(): string[] {
 
 /**
  * Dynamically loads all schema modules and merges their exports
- * This works at runtime, similar to TypeORM's entity auto-discovery
+ * This works at runtime
  */
 function loadAllSchemas(): Record<string, any> {
   const allSchemas: Record<string, any> = {};

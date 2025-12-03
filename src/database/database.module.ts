@@ -1,18 +1,9 @@
 import { Module, Global } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createDatabase } from './drizzle';
+import { dbProvider } from './db.provider';
 
 @Global()
 @Module({
-  providers: [
-    {
-      provide: 'DATABASE',
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return createDatabase(configService);
-      },
-    },
-  ],
-  exports: ['DATABASE'],
+  providers: [dbProvider],
+  exports: [dbProvider],
 })
 export class DatabaseModule {}
