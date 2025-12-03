@@ -92,6 +92,12 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(better-auth|@thallesp/nestjs-better-auth|better-call)/)"
+    ],
+    "moduleNameMapper": {
+      "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/auth/decorators/__mocks__/better-auth.mock.ts"
+    },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
