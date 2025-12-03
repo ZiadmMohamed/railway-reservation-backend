@@ -12,6 +12,7 @@ async function bootstrap() {
   const loggerInstance = createLogger(winstonConfig);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({ instance: loggerInstance }),
+    bodyParser: false,
   });
 
   // Enable dependency injection for custom validators

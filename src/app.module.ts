@@ -1,43 +1,25 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
-import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-store';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    CacheModule.registerAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          url: configService.get('REDIS_URL'),
-          // socket: {
-          //   tls:
-          //     configService.get('NODE_ENV') === Environment.Production
-          //       ? true
-          //       : false,
-          // },
-        }),
-      }),
-    }),
+    DatabaseModule,
+    AuthModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000, // 60 seconds
-        limit: 10, // 10 requests
+        ttl: 60000,
+        limit: 10,
       },
     ]),
-    PrometheusModule.register({
-      path: '/metrics',
-    }),
   ],
 
   controllers: [AppController],
