@@ -1,16 +1,18 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { db } from '../database/drizzle';
+import { ConfigService } from '@nestjs/config';
 
-export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: 'pg',
-  }),
-  emailAndPassword: {
-    enabled: true,
-  },
-  secret: process.env.BETTER_AUTH_SECRET!,
-  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
-  basePath: '/api/auth',
-  hooks: {},
-});
+export const createAuth = (db: any, configService: ConfigService) => {
+  return betterAuth({
+    database: drizzleAdapter(db, {
+      provider: 'pg',
+    }),
+    emailAndPassword: {
+      enabled: true,
+    },
+    secret: configService.get<string>('auth.secret')!,
+    baseURL: configService.get<string>('auth.url') || 'http://localhost:3000',
+    basePath: configService.get<string>('auth.basePath') || '/api/auth',
+    hooks: {},
+  });
+};
