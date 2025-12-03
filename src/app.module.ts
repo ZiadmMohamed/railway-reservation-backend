@@ -7,9 +7,21 @@ import { APP_GUARD } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { AuthModule } from "@thallesp/nestjs-better-auth";
 
 @Module({
   imports: [
+     AuthModule.forRoot({
+      auth: {
+        options: {
+          trustedOrigins: [],
+        },
+
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: '1d' },
+        hashStrategy: 'bcrypt',
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
