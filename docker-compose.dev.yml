@@ -39,5 +39,22 @@ services:
         condition: service_healthy
     command: npm run start:dev
 
+  studio:
+    container_name: railway-studio
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "4983:4983"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://railway:railway@postgres:5432/railway
+    command: npx drizzle-kit studio --host 0.0.0.0 --port 4983
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
