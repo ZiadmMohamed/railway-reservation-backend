@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from './schema';
+import * as schema from './schemas';
 import { ConfigService } from '@nestjs/config';
 
 // Use require for postgres package due to ESM/CommonJS compatibility
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const postgres = require('postgres');
 
 export const createDatabase = (configService: ConfigService) => {
