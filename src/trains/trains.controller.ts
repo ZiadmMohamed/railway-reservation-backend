@@ -17,8 +17,10 @@ import { UpdateTrainDto } from './dto/update-train.dto';
 import { TrainResponseDto } from './dto/train-response.dto';
 import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('Trains')
+@AllowAnonymous()
 @Controller('api/trains')
 export class TrainsController {
   constructor(private readonly trainsService: TrainsService) {}
@@ -26,14 +28,18 @@ export class TrainsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new train' })
-  @AllowAnonymous()
   @ApiResponse({
     status: 201,
     description: 'Train created successfully',
     type: TrainResponseDto,
   })
-  create(@Body() createTrainDto: CreateTrainDto) {
-    return this.trainsService.create(createTrainDto);
+  async create(@Body() createTrainDto: CreateTrainDto, @I18n() i18n: I18nContext) {
+    const train = await this.trainsService.create(createTrainDto, i18n.lang);
+
+    return {
+      message: i18n.t('train.created'),
+      data: train,
+    };
   }
 
   @Get()
@@ -45,10 +51,15 @@ export class TrainsController {
     description: 'List of trains',
     type: [TrainResponseDto],
   })
-  findAll(@Query() query: PaginationQueryParams) {
+  async findAll(@Query() query: PaginationQueryParams, @I18n() i18n: I18nContext) {
     const page = query.page || 1;
     const limit = query.limit || 10;
-    return this.trainsService.findAll(page, limit);
+    const result = await this.trainsService.findAll(page, limit);
+
+    return {
+      message: i18n.t('train.list'),
+      ...result,
+    };
   }
 
   @Get(':id')
@@ -60,8 +71,13 @@ export class TrainsController {
     type: TrainResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Train not found' })
-  findOne(@Param('id') id: string) {
-    return this.trainsService.findOne(id);
+  async findOne(@Param('id') id: string, @I18n() i18n: I18nContext) {
+    const train = await this.trainsService.findOne(id);
+
+    return {
+      message: i18n.t('train.found'),
+      data: train,
+    };
   }
 
   @Patch(':id')
@@ -73,17 +89,30 @@ export class TrainsController {
     type: TrainResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Train not found' })
-  update(@Param('id') id: string, @Body() updateTrainDto: UpdateTrainDto) {
-    return this.trainsService.update(id, updateTrainDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTrainDto: UpdateTrainDto,
+    @I18n() i18n: I18nContext,
+  ) {
+    const train = await this.trainsService.update(id, updateTrainDto, i18n.lang);
+
+    return {
+      message: i18n.t('train.updated'),
+      data: train,
+    };
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a train' })
   @ApiParam({ name: 'id', description: 'Train ID' })
-  @ApiResponse({ status: 204, description: 'Train deleted successfully' })
+  @ApiResponse({ status: 200, description: 'Train deleted successfully' })
   @ApiResponse({ status: 404, description: 'Train not found' })
-  remove(@Param('id') id: string) {
-    return this.trainsService.remove(id);
+  async remove(@Param('id') id: string, @I18n() i18n: I18nContext) {
+    await this.trainsService.remove(id);
+
+    return {
+      message: i18n.t('train.deleted'),
+    };
   }
 }

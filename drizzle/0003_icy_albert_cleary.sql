@@ -1,0 +1,1 @@
+ALTER TABLE "train" DROP COLUMN "name";

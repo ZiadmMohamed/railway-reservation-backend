@@ -1,0 +1,10 @@
+{
+  "notFound": "Train not found",
+  "found": "Train retrieved successfully",
+  "created": "Train created successfully",
+  "updated": "Train updated successfully",
+  "deleted": "Train deleted successfully",
+  "list": "Train list retrieved successfully",
+  "noSeatsAvailable": "No seats available on this train",
+  "bookingSuccess": "Booking confirmed successfully"
+}

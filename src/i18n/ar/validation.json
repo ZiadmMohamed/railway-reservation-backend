@@ -1,0 +1,10 @@
+{
+  "required": "{property} مطلوب",
+  "minLength": "{property} يجب أن يكون على الأقل {min} حرفًا",
+  "maxLength": "{property} يجب ألا يتجاوز {max} حرفًا",
+  "isNumber": "{property} يجب أن يكون رقمًا",
+  "min": "{property} يجب أن يكون على الأقل {min}",
+  "max": "{property} يجب ألا يتجاوز {max}",
+  "invalidFormat": "صيغة {property} غير صالحة",
+  "isString": "{property} يجب أن يكون نصًا"
+}
