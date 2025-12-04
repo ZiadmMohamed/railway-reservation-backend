@@ -7,7 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
-import { AuthModule } from "@thallesp/nestjs-better-auth";
+import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { TrainsModule } from './trains/trains.module';
@@ -17,7 +17,7 @@ import authConfig from './config/auth.config';
 
 @Module({
   imports: [
-     AuthModule.forRoot({
+    AuthModule.forRoot({
       auth: {
         options: {
           trustedOrigins: [],
