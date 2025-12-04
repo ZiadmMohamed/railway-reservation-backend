@@ -2,25 +2,33 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TrainsRepository } from './repositories/trains.repository';
 import { CreateTrainDto } from './dto/create-train.dto';
 import { UpdateTrainDto } from './dto/update-train.dto';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class TrainsService {
   constructor(private readonly trainsRepository: TrainsRepository) {}
 
-  async create(createTrainDto: CreateTrainDto) {
-    return this.trainsRepository.create({
-      name: createTrainDto.name,
-      number: createTrainDto.number,
-      source: createTrainDto.source,
-      destination: createTrainDto.destination,
-      totalSeats: createTrainDto.totalSeats,
-      availableSeats: createTrainDto.totalSeats, // Initially all seats are available
-    });
+  async create(createTrainDto: CreateTrainDto, locale: string) {
+    return this.trainsRepository.create(
+      {
+        number: createTrainDto.number,
+        totalSeats: createTrainDto.totalSeats,
+        availableSeats: createTrainDto.totalSeats, // Initially all seats are available
+      },
+      {
+        name: createTrainDto.name,
+        source: createTrainDto.source,
+        destination: createTrainDto.destination,
+      },
+      locale,
+    );
   }
 
   async findAll(page = 1, limit = 10) {
+    const locale = I18nContext.current()?.lang || 'en';
+
     const [trains, totalCount] = await Promise.all([
-      this.trainsRepository.findAll(page, limit),
+      this.trainsRepository.findAll(page, limit, locale),
       this.trainsRepository.count(),
     ]);
 
@@ -36,38 +44,44 @@ export class TrainsService {
   }
 
   async findOne(id: string) {
-    const train = await this.trainsRepository.findOne(id);
+    const locale = I18nContext.current()?.lang || 'en';
+    const train = await this.trainsRepository.findOne(id, locale);
 
     if (!train) {
-      throw new NotFoundException(`Train with ID ${id} not found`);
+      throw new NotFoundException(I18nContext.current().t('train.notFound'));
     }
 
     return train;
   }
 
-  async update(id: string, updateTrainDto: UpdateTrainDto) {
+  async update(id: string, updateTrainDto: UpdateTrainDto, locale: string) {
     // Check if train exists
-    const existing = await this.findOne(id);
+    await this.findOne(id);
 
     const updateData: any = {};
-    if (updateTrainDto.name !== undefined) updateData.name = updateTrainDto.name;
     if (updateTrainDto.number !== undefined) updateData.number = updateTrainDto.number;
-    if (updateTrainDto.source !== undefined) updateData.source = updateTrainDto.source;
-    if (updateTrainDto.destination !== undefined)
-      updateData.destination = updateTrainDto.destination;
+
+    // Handle totalSeats update
     if (updateTrainDto.totalSeats !== undefined) {
+      const existing = await this.trainsRepository.findOne(id);
       updateData.totalSeats = updateTrainDto.totalSeats;
       // Recalculate available seats if total seats changed
       const seatsDiff = parseInt(updateTrainDto.totalSeats) - parseInt(existing.totalSeats);
       updateData.availableSeats = (parseInt(existing.availableSeats) + seatsDiff).toString();
     }
 
-    return this.trainsRepository.update(id, updateData);
+    const translationData = {
+      name: updateTrainDto.name,
+      source: updateTrainDto.source,
+      destination: updateTrainDto.destination,
+    };
+
+    return this.trainsRepository.update(id, updateData, translationData, locale);
   }
 
   async remove(id: string) {
     await this.findOne(id); // Throws if not found
     await this.trainsRepository.delete(id);
-    return { message: `Train with ID ${id} has been deleted` };
+    return { message: I18nContext.current().t('train.deleted') };
   }
 }
