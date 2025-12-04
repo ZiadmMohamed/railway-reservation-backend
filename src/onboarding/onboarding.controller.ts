@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { OnboardingService } from './onboarding.service';
-import { AllowAnonymous } from 'src/auth/decorators/public.decorator';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller('onboarding')
 export class OnboardingController {
