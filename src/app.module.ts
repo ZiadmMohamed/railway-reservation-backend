@@ -10,6 +10,8 @@ import { TrainsModule } from './trains/trains.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
+import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -19,6 +21,18 @@ import authConfig from './config/auth.config';
       envFilePath: ['.env'],
     }),
     DatabaseModule,
+    // i18n configuration
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        AcceptLanguageResolver, // Primary: Accept-Language header
+        new HeaderResolver(['x-custom-lang']), // Backup: custom header
+      ],
+    }),
     AuthModule,
     TrainsModule,
     ThrottlerModule.forRoot([

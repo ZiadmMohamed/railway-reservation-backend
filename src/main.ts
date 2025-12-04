@@ -5,7 +5,7 @@ import { WinstonModule } from 'nest-winston';
 import { createLogger } from 'winston';
 import { createWinstonConfig } from './config/logger/logger.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe } from '@nestjs/common';
+import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 
@@ -23,10 +23,18 @@ async function bootstrap() {
 
   // Enable global validation pipe
   app.useGlobalPipes(
-    new ValidationPipe({
+    new I18nValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+    }),
+  );
+
+  // Enable global exception filter for i18n validation errors
+  // This ensures localized validation messages are returned instead of a generic 400 response
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({
+      // detailedErrors: true,
     }),
   );
 
