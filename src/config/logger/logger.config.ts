@@ -2,6 +2,7 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
+import { ConfigService } from '@nestjs/config';
 
 // Optional: Add request metadata when ClsModule is properly configured
 // import { ClsServiceManager } from 'nestjs-cls';
@@ -41,8 +42,8 @@ const errorRotateTransport = new DailyRotateFile({
   format: winston.format.combine(winston.format.json()),
 });
 
-export const winstonConfig = {
-  level: process.env.LOG_LEVEL || 'info',
+export const createWinstonConfig = (configService: ConfigService) => ({
+  level: configService.get<string>('app.logLevel') || 'info',
   format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   handleExceptions: true,
   handleRejections: true,
@@ -59,4 +60,4 @@ export const winstonConfig = {
       ),
     }),
   ],
-};
+});

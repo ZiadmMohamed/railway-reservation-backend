@@ -1,0 +1,121 @@
+### Railway Reservation API - Trains CRUD Demo
+### Base URL
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Variables (update these after creating a train)
+@trainId = <replace-with-actual-train-id>
+
+###############################################
+# Health Check
+###############################################
+
+### Health Check
+GET {{baseUrl}}/api/health
+
+###############################################
+# Trains CRUD Operations
+###############################################
+
+### 1. Create a new train
+POST {{baseUrl}}/api/trains
+Content-Type: {{contentType}}
+
+{
+  "name": "Express Train",
+  "number": "T12345",
+  "source": "New York",
+  "destination": "Boston",
+  "totalSeats": "100"
+}
+
+### 2. Get all trains (with pagination)
+GET {{baseUrl}}/api/trains?page=1&limit=10
+
+### 3. Get all trains (default pagination)
+GET {{baseUrl}}/api/trains
+
+### 4. Get a specific train by ID
+GET {{baseUrl}}/api/trains/{{trainId}}
+
+### 5. Update a train (partial update)
+PATCH {{baseUrl}}/api/trains/{{trainId}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Super Express Train",
+  "totalSeats": "150"
+}
+
+### 6. Update train source and destination
+PATCH {{baseUrl}}/api/trains/{{trainId}}
+Content-Type: {{contentType}}
+
+{
+  "source": "Chicago",
+  "destination": "Los Angeles"
+}
+
+### 7. Delete a train
+DELETE {{baseUrl}}/api/trains/{{trainId}}
+
+###############################################
+# Example: Complete workflow
+###############################################
+
+### Step 1: Create train
+# @name createTrain
+POST {{baseUrl}}/api/trains
+Content-Type: {{contentType}}
+
+{
+  "name": "Demo Train",
+  "number": "DEMO001",
+  "source": "Station A",
+  "destination": "Station B",
+  "totalSeats": "50"
+}
+
+### Step 2: Get created train (copy the id from response)
+# Response will contain the train with an id field
+# Copy that id and use it in the next requests
+
+### Step 3: Update the train
+PATCH {{baseUrl}}/api/trains/<paste-train-id-here>
+Content-Type: {{contentType}}
+
+{
+  "name": "Updated Demo Train",
+  "totalSeats": "75"
+}
+
+### Step 4: Get updated train
+GET {{baseUrl}}/api/trains/<paste-train-id-here>
+
+### Step 5: Delete the train
+DELETE {{baseUrl}}/api/trains/<paste-train-id-here>
+
+###############################################
+# Error Cases (for testing)
+###############################################
+
+### Get non-existent train (should return 404)
+GET {{baseUrl}}/api/trains/non-existent-id
+
+### Create train with invalid data (should return 400)
+POST {{baseUrl}}/api/trains
+Content-Type: {{contentType}}
+
+{
+  "name": "",
+  "number": "T12345"
+}
+
+### Update non-existent train (should return 404)
+PATCH {{baseUrl}}/api/trains/non-existent-id
+Content-Type: {{contentType}}
+
+{
+  "name": "Test"
+}
+
