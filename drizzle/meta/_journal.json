@@ -36,6 +36,13 @@
       "when": 1764868905489,
       "tag": "0004_boring_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1764874183733,
+      "tag": "0005_glossy_big_bertha",
+      "breakpoints": true
     }
   ]
 }

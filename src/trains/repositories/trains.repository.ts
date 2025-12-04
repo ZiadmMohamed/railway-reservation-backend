@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { eq, inArray, and } from 'drizzle-orm';
 import { train } from '../schemas/train.schema';
 import { trainTranslations } from '../schemas/train-translations.schema';
+import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
 import { randomUUID } from 'crypto';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
@@ -29,6 +30,17 @@ export class TrainsRepository {
     const id = randomUUID();
     const newTrain = { id, ...data };
 
+    // Get language ID from locale code using a query
+    const [language] = await this.db
+      .select({ id: supportedLanguages.id })
+      .from(supportedLanguages)
+      .where(eq(supportedLanguages.code, locale))
+      .limit(1);
+
+    if (!language) {
+      throw new Error(`Language with code '${locale}' not found`);
+    }
+
     // Create train and translation in a transaction
     const [created] = await this.db.insert(train).values(newTrain).returning();
 
@@ -36,7 +48,7 @@ export class TrainsRepository {
     await this.db.insert(trainTranslations).values({
       id: randomUUID(),
       trainId: id,
-      locale,
+      languageId: language.id,
       name: translation.name,
       source: translation.source,
       destination: translation.destination,
@@ -76,11 +88,12 @@ export class TrainsRepository {
       return [];
     }
 
-    // 2. Fetch trains and translations
+    // 2. Fetch trains and translations with language info
     const rows = await this.db
       .select()
       .from(train)
       .leftJoin(trainTranslations, eq(trainTranslations.trainId, train.id))
+      .leftJoin(supportedLanguages, eq(trainTranslations.languageId, supportedLanguages.id))
       .where(inArray(train.id, trainIds));
 
     // 3. Aggregate results
@@ -96,8 +109,8 @@ export class TrainsRepository {
       }
 
       const trainEntry = trainsMap.get(trainId);
-      if (row.train_translations) {
-        trainEntry.translations[row.train_translations.locale] = {
+      if (row.train_translations && row.supported_languages) {
+        trainEntry.translations[row.supported_languages.code] = {
           name: row.train_translations.name,
           source: row.train_translations.source,
           destination: row.train_translations.destination,
@@ -140,6 +153,7 @@ export class TrainsRepository {
       .select()
       .from(train)
       .leftJoin(trainTranslations, eq(trainTranslations.trainId, train.id))
+      .leftJoin(supportedLanguages, eq(trainTranslations.languageId, supportedLanguages.id))
       .where(eq(train.id, id));
 
     if (rows.length === 0) {
@@ -150,8 +164,8 @@ export class TrainsRepository {
     const translationsMap: Record<string, any> = {};
 
     for (const row of rows) {
-      if (row.train_translations) {
-        translationsMap[row.train_translations.locale] = {
+      if (row.train_translations && row.supported_languages) {
+        translationsMap[row.supported_languages.code] = {
           name: row.train_translations.name,
           source: row.train_translations.source,
           destination: row.train_translations.destination,
@@ -204,10 +218,23 @@ export class TrainsRepository {
 
     // Handle translation update/insert
     if (Object.keys(translation).length > 0) {
+      // Get language ID from locale code using a query
+      const [language] = await this.db
+        .select({ id: supportedLanguages.id })
+        .from(supportedLanguages)
+        .where(eq(supportedLanguages.code, locale))
+        .limit(1);
+
+      if (!language) {
+        throw new Error(`Language with code '${locale}' not found`);
+      }
+
       const existingTranslation = await this.db
         .select()
         .from(trainTranslations)
-        .where(and(eq(trainTranslations.trainId, id), eq(trainTranslations.locale, locale)));
+        .where(
+          and(eq(trainTranslations.trainId, id), eq(trainTranslations.languageId, language.id)),
+        );
 
       if (existingTranslation.length > 0) {
         // Update existing translation
@@ -228,7 +255,7 @@ export class TrainsRepository {
         await this.db.insert(trainTranslations).values({
           id: randomUUID(),
           trainId: id,
-          locale,
+          languageId: language.id,
           name: translation.name || '',
           source: translation.source || '',
           destination: translation.destination || '',
@@ -236,19 +263,22 @@ export class TrainsRepository {
       }
     }
 
-    // Fetch updated translations
+    // Fetch updated translations with language info
     const updatedTranslations = await this.db
       .select()
       .from(trainTranslations)
+      .leftJoin(supportedLanguages, eq(trainTranslations.languageId, supportedLanguages.id))
       .where(eq(trainTranslations.trainId, id));
 
     const translationsMap = updatedTranslations.reduce(
-      (acc, trans) => {
-        acc[trans.locale] = {
-          name: trans.name,
-          source: trans.source,
-          destination: trans.destination,
-        };
+      (acc, row) => {
+        if (row.supported_languages) {
+          acc[row.supported_languages.code] = {
+            name: row.train_translations.name,
+            source: row.train_translations.source,
+            destination: row.train_translations.destination,
+          };
+        }
         return acc;
       },
       {} as Record<string, { name: string; source: string; destination: string }>,
