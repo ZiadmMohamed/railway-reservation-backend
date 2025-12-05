@@ -8,8 +8,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import { AUTH_PROVIDER } from './auth/auth.module';
-import { toNodeHandler } from 'better-auth/node';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -39,14 +37,6 @@ async function bootstrap() {
       // detailedErrors: true,
     }),
   );
-
-  // Mount better-auth handler
-  const auth = app.get(AUTH_PROVIDER);
-  const basePath = configService.get<string>('auth.basePath') || '/api/auth';
-  const handler = toNodeHandler(auth);
-
-  // Mount better-auth handler as Express middleware
-  app.use(basePath, handler);
 
   const config = new DocumentBuilder()
     .setTitle('Railway API')
