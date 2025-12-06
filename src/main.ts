@@ -50,11 +50,14 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   const port = configService.get<number>('app.port') || 3000;
-  await app.listen(port).then(() => {
-    loggerInstance.info(`Server is running on port ${port}`);
-  }).catch((error) => {
-    loggerInstance.error(`Error starting server: ${error}`);
-    process.exit(1);
-  });
+  await app
+    .listen(port)
+    .then(() => {
+      loggerInstance.info(`Server is running on port ${port}`);
+    })
+    .catch(error => {
+      loggerInstance.error(`Error starting server: ${error}`);
+      process.exit(1);
+    });
 }
 bootstrap();

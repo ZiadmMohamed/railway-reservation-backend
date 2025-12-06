@@ -167,9 +167,7 @@ describe('EmailService', () => {
         html: expect.stringContaining('123456'),
       });
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'OTP email sent successfully to user@example.com',
-      );
+      expect(consoleSpy).toHaveBeenCalledWith('OTP email sent successfully to user@example.com');
 
       consoleSpy.mockRestore();
     });
@@ -221,9 +219,9 @@ describe('EmailService', () => {
       mockSendMail.mockRejectedValue(error);
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      await expect(
-        service.sendOTPEmail('user@example.com', '123456', 'signup'),
-      ).rejects.toThrow('SMTP connection failed');
+      await expect(service.sendOTPEmail('user@example.com', '123456', 'signup')).rejects.toThrow(
+        'SMTP connection failed',
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to send OTP email to user@example.com:',

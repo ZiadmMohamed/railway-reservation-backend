@@ -7,4 +7,3 @@ export default registerAs('email', () => ({
   smtpPassword: process.env.SMTP_PASSWORD,
   emailFrom: process.env.EMAIL_FROM || 'noreply@example.com',
 }));
-
