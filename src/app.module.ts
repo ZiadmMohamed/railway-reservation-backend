@@ -10,6 +10,7 @@ import { TrainsModule } from './trains/trains.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
+import emailConfig from './config/email.config';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import * as path from 'path';
@@ -18,7 +19,7 @@ import * as path from 'path';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, authConfig],
+      load: [appConfig, databaseConfig, authConfig, emailConfig],
       envFilePath: ['.env'],
     }),
     DatabaseModule,
