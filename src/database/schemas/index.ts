@@ -92,6 +92,7 @@ Object.keys(discoveredSchemas).forEach(key => {
 export * from '../../auth/schemas/auth.schema';
 export * from '../../trains/schemas/train.schema';
 export * from '../../trains/schemas/train-translations.schema';
+export * from '../../passenger/schemas/passenger.schema';
 export * from './supported-languages.schema';
 
 // Note: When you create a new schema file (e.g., src/users/schemas/user.schema.ts),

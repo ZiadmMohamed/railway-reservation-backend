@@ -12,6 +12,7 @@ import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { PassengerModule } from './passenger/passenger.module';
 import * as path from 'path';
 
 @Module({
@@ -43,6 +44,7 @@ import * as path from 'path';
       },
     ]),
     OnboardingModule,
+    PassengerModule,
   ],
 
   controllers: [AppController],
