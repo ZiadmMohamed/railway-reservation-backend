@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
-import { passenger } from '../schemas/passenger.schema';
+import { Passenger, passenger } from '../schemas/passenger.schema';
 import { CreatePassengerDto } from '../dto/create-passenger.dto';
 import { UpdatePassengerDto } from '../dto/update-passenger.dto';
 
@@ -36,7 +36,7 @@ export class PassengerRepository {
    * @param limit - The number of passengers per page
    * @returns The passengers
    */
-  async findAll(page = 1, limit = 10) {
+  async findAll(userId: string, page: number, limit: number) {
     const offset = (page - 1) * limit;
 
     const passengers = await this.db.select().from(passenger).limit(limit).offset(offset);
@@ -48,19 +48,22 @@ export class PassengerRepository {
    * Count the number of passengers
    * @returns The number of passengers
    */
-  async count() {
-    const result = await this.db.select().from(passenger);
+  async count(userId: string) {
+    const result = await this.db.select().from(passenger).where(eq(passenger.userId, userId));
     return result.length;
   }
 
   /**
    * Find a passenger by id
    * @param id - The id of the passenger
+   * @param userId - The id of the user
    * @returns The passenger or null if not found
    */
-  async findOne(id: string) {
-    const [result] = await this.db.select().from(passenger).where(eq(passenger.id, id));
-
+  async findOne(id: string, userId: string): Promise<Passenger | null> {
+    const [result] = await this.db
+      .select()
+      .from(passenger)
+      .where(and(eq(passenger.id, id), eq(passenger.userId, userId)));
     return result ?? null;
   }
 
@@ -84,7 +87,7 @@ export class PassengerRepository {
    * Delete a passenger
    * @param id - The id of the passenger
    */
-  async delete(id: string) {
-    await this.db.delete(passenger).where(eq(passenger.id, id));
+  async delete(id: string, userId: string) {
+    await this.db.delete(passenger).where(and(eq(passenger.id, id), eq(passenger.userId, userId)));
   }
 }

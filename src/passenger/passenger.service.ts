@@ -23,10 +23,10 @@ export class PassengerService {
     return createdPassenger;
   }
 
-  async findAll(page = 1, limit = 10) {
+  async findAll(userId: string, page: number, limit: number) {
     const [passengers, totalCount] = await Promise.all([
-      this.passengerRepository.findAll(page, limit),
-      this.passengerRepository.count(),
+      this.passengerRepository.findAll(userId, page, limit),
+      this.passengerRepository.count(userId),
     ]);
 
     return {
@@ -40,8 +40,8 @@ export class PassengerService {
     };
   }
 
-  async findOne(id: string): Promise<Passenger> {
-    const passenger = await this.passengerRepository.findOne(id);
+  async findOne(id: string, userId: string): Promise<Passenger> {
+    const passenger = await this.passengerRepository.findOne(id, userId);
 
     if (!passenger) {
       throw new NotFoundException('Passenger not found');
@@ -50,8 +50,12 @@ export class PassengerService {
     return passenger;
   }
 
-  async update(id: string, updatePassengerDto: UpdatePassengerDto): Promise<Passenger> {
-    await this.findOne(id);
+  async update(
+    id: string,
+    userId: string,
+    updatePassengerDto: UpdatePassengerDto,
+  ): Promise<Passenger> {
+    await this.findOne(id, userId);
 
     const updatedPassenger = await this.passengerRepository.update(id, updatePassengerDto);
     if (!updatedPassenger) throw new BadRequestException('Failed to update passenger');
@@ -59,9 +63,9 @@ export class PassengerService {
     return updatedPassenger;
   }
 
-  async remove(id: string): Promise<void> {
-    await this.findOne(id);
+  async remove(id: string, userId: string): Promise<void> {
+    await this.findOne(id, userId);
 
-    await this.passengerRepository.delete(id);
+    await this.passengerRepository.delete(id, userId);
   }
 }
