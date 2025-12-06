@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { emailOTP } from 'better-auth/plugins';
 import { ConfigService } from '@nestjs/config';
 
-export const createAuth = (db: any, configService: ConfigService) => {
+export const createAuth = (db: any, configService: ConfigService, emailService?: any) => {
   return betterAuth({
     database: drizzleAdapter(db, {
       provider: 'pg',
@@ -20,12 +20,11 @@ export const createAuth = (db: any, configService: ConfigService) => {
         otpLength: 6,
         expiresIn: 300, // 5 minutes
         sendVerificationOTP: async ({ email, otp, type }) => {
-          console.log(`[OTP ${type}] Email: ${email}, OTP: ${otp}`);
-          // await sendEmail({
-          //   to: email,
-          //   subject: 'Your OTP Code',
-          //   text: `Your OTP code is: ${otp}`,
-          // });
+          if (emailService) {
+            await emailService.sendOTPEmail(email, otp, type);
+          } else {
+            console.log(`[OTP ${type}] Email: ${email}, OTP: ${otp}`);
+          }
         },
       }),
     ],
