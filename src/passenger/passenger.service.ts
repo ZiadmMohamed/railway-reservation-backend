@@ -40,7 +40,7 @@ export class PassengerService {
     };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Passenger> {
     const passenger = await this.passengerRepository.findOne(id);
 
     if (!passenger) {
@@ -50,7 +50,7 @@ export class PassengerService {
     return passenger;
   }
 
-  async update(id: string, updatePassengerDto: UpdatePassengerDto) {
+  async update(id: string, updatePassengerDto: UpdatePassengerDto): Promise<Passenger> {
     await this.findOne(id);
 
     const updatedPassenger = await this.passengerRepository.update(id, updatePassengerDto);
@@ -59,10 +59,9 @@ export class PassengerService {
     return updatedPassenger;
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     await this.findOne(id);
 
     await this.passengerRepository.delete(id);
-    return { message: 'Passenger deleted successfully' };
   }
 }
