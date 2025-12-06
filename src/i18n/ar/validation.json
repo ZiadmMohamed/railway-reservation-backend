@@ -6,5 +6,7 @@
   "min": "{property} يجب أن يكون على الأقل {min}",
   "max": "{property} يجب ألا يتجاوز {max}",
   "invalidFormat": "صيغة {property} غير صالحة",
-  "isString": "{property} يجب أن يكون نصًا"
+  "isString": "{property} يجب أن يكون نصًا",
+  "isEmail": "{property} يجب أن يكون عنوان بريد إلكتروني صالح",
+  "length": "{property} يجب أن يكون بالضبط {min} أحرف"
 }
