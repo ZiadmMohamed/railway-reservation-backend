@@ -1,6 +1,6 @@
 import { pgTable, text, unique } from 'drizzle-orm/pg-core';
 import { InferSelectModel, relations, sql } from 'drizzle-orm';
-import { user } from 'src/database/schemas';
+import { user } from '../../auth/schemas/auth.schema';
 
 export const passenger = pgTable(
   'passenger',

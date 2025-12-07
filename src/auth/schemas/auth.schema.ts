@@ -4,7 +4,7 @@
 
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
-import { passenger } from 'src/database/schemas';
+import { passenger } from '../../passenger/schemas/passenger.schema';
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
