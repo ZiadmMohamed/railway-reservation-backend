@@ -1,55 +1,63 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
-import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { AuthModule as Authmodule } from '@thallesp/nestjs-better-auth';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
+import { TrainsModule } from './trains/trains.module';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
+import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
+import { OnboardingModule } from './onboarding/onboarding.module';
+import * as path from 'path';
 
 @Module({
   imports: [
-    AuthModule.forRoot({
-      auth: {
-        options: {
-          trustedOrigins: [],
-        },
+    // Authmodule.forRoot({
+    //   auth: {
+    //     options: {
+    //       trustedOrigins: [],
+    //     },
 
-        secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '1d' },
-        hashStrategy: 'bcrypt',
-      },
-    }),
+    //     secret: process.env.JWT_SECRET,
+    //     signOptions: { expiresIn: '1d' },
+    //     hashStrategy: 'bcrypt',
+    //   },
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [appConfig, databaseConfig, authConfig],
+      envFilePath: ['.env'],
     }),
-    CacheModule.registerAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          url: configService.get('REDIS_URL'),
-          // socket: {
-          //   tls:
-          //     configService.get('NODE_ENV') === Environment.Production
-          //       ? true
-          //       : false,
-          // },
-        }),
-      }),
+    DatabaseModule,
+    // i18n configuration
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        AcceptLanguageResolver, // Primary: Accept-Language header
+        new HeaderResolver(['x-custom-lang']), // Backup: custom header
+      ],
     }),
+    AuthModule,
+    TrainsModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000, // 60 seconds
-        limit: 10, // 10 requests
+        ttl: 60000,
+        limit: 20,
       },
     ]),
-    PrometheusModule.register({
-      path: '/metrics',
-    }),
+    OnboardingModule,
   ],
 
   controllers: [AppController],

@@ -3,27 +3,39 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WinstonModule } from 'nest-winston';
 import { createLogger } from 'winston';
-import { winstonConfig } from './config/logger/logger.config';
+import { createWinstonConfig } from './config/logger/logger.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe } from '@nestjs/common';
+import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const loggerInstance = createLogger(winstonConfig);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
 
-    logger: WinstonModule.createLogger({ instance: loggerInstance }),
+    bodyParser: false,
   });
+
+  const configService = app.get(ConfigService);
+  const loggerInstance = createLogger(createWinstonConfig(configService));
+  app.useLogger(WinstonModule.createLogger({ instance: loggerInstance }));
 
   // Enable dependency injection for custom validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Enable global validation pipe
   app.useGlobalPipes(
-    new ValidationPipe({
+    new I18nValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+    }),
+  );
+
+  // Enable global exception filter for i18n validation errors
+  // This ensures localized validation messages are returned instead of a generic 400 response
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({
+      // detailedErrors: true,
     }),
   );
 
@@ -38,7 +50,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = configService.get<number>('app.port') || 4000;
   await app.listen(port);
 }
 bootstrap();

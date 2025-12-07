@@ -1,33 +1,60 @@
 services:
-  # mongo:
-  #   image: mongo:7
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - mongo_data:/data/db
-  #   healthcheck:
-  #     test: ["CMD", "mongosh", "--quiet", "localhost:27017", "--eval", "db.adminCommand('ping').ok"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-  redis:
-    image: redis:7
-    command: ["redis-server", "--appendonly", "yes"]
+  postgres:
+    image: postgres:16-alpine
+    container_name: railway-postgres-dev
+    environment:
+      POSTGRES_USER: railway
+      POSTGRES_PASSWORD: railway
+      POSTGRES_DB: railway
     ports:
-      - "6379:6379"
+      - "5432:5432"
     volumes:
-      - redis_data:/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "pg_isready -U railway"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  app:
+    container_name: railway-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://railway:railway@postgres:5432/railway
+      - PORT=3000
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./logs:/usr/src/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run start:dev
+
+  studio:
+    container_name: railway-studio
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "4983:4983"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://railway:railway@postgres:5432/railway
+    command: npx drizzle-kit studio --host 0.0.0.0 --port 4983
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
-  mongo_data:
-  redis_data:
-  node_modules:
-
-
-
+  postgres_data:
