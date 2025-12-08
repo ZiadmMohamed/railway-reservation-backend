@@ -35,8 +35,6 @@ export class AuthController {
     return this.authService.verifyOtp(verifyOtpDto);
   }
 
-
-  
   @AllowAnonymous()
   @Post('login')
   @ApiOperation({ summary: 'login  user' })
@@ -46,7 +44,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 400, description: 'user is not found plz sign up' })
   async login(@Body() body: LoginDTO) {
-    const user= await this.authService.login(body);
-    return {success:true,data:user}
+    const user = await this.authService.login(body);
+    return { success: true, data: user };
   }
 }

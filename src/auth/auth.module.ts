@@ -9,10 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    
     ConfigModule,
     BetterAuthModule.forRootAsync({
-      
       inject: ['DATABASE', ConfigService],
       useFactory: (db: any, configService: ConfigService) => {
         return {
@@ -22,7 +20,7 @@ import { JwtService } from '@nestjs/jwt';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,TokenService,JwtService],
+  providers: [AuthService, TokenService, JwtService],
   exports: [AuthService],
 })
 export class AuthModule {}
