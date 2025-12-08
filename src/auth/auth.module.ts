@@ -4,7 +4,6 @@ import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { TokenService } from 'src/common/service/token/token.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
@@ -20,7 +19,7 @@ import { JwtService } from '@nestjs/jwt';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokenService, JwtService],
+  providers: [AuthService],
   exports: [AuthService],
 })
 export class AuthModule {}

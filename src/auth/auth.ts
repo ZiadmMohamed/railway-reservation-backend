@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { emailOTP } from 'better-auth/plugins';
 import { ConfigService } from '@nestjs/config';
 
-export const createAuth = (db: any, configService: ConfigService, email?: any) => {
+export const createAuth = (db: any, configService: ConfigService, emailService?: any) => {
   return betterAuth({
     database: drizzleAdapter(db, {
       provider: 'pg',
