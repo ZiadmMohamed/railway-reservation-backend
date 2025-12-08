@@ -10,8 +10,9 @@ import { TokenService } from 'src/common/service/token/token.service';
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
-  constructor(private readonly configService: ConfigService,
-    private readonly TokenService:TokenService
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly TokenService: TokenService,
   ) {
     // Create server-side auth client
     const baseURL = this.configService.get<string>('auth.url') || 'http://localhost:3000';
@@ -45,20 +46,27 @@ export class AuthService {
     return result;
   }
 
-  async login(body:LoginDTO){
+  async login(body: LoginDTO) {
+    
+    const result = await this.authClient.signIn.email({
+      email: body.email,
+      password: body.password,
+      rememberMe: true,
+    });
+    const user = result.data?.user;
+    
+    if (!user || !user.id) {
+      throw new NotFoundException('user is not found or not confirmed');
+    }
 
-   const result= await this. authClient.signIn.email({
-    email:body.email,
-    password: body.password,
-    rememberMe: true,
-});
-const user= result.data?.user
-if(!user || !user.id) {
-  throw new NotFoundException("user is not found or not confirmed")
-}
- 
-    const access_token= this.TokenService.sign({payload:user.id},{secret:process.env.jwt_secret,expiresIn:"3h"})
-    const refresh_token= this.TokenService.sign({payload:user.id},{secret:process.env.jwt_secret,expiresIn:"1d"})
-return {access_token,refresh_token,user}
+    const access_token = this.TokenService.sign(
+      { payload: user.id },
+      { secret: process.env.jwt_secret, expiresIn: '3h' },
+    );
+    const refresh_token = this.TokenService.sign(
+      { payload: user.id },
+      { secret: process.env.jwt_secret, expiresIn: '1d' },
+    );
+    return { access_token, refresh_token, user };
   }
 }

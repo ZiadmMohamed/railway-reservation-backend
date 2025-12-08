@@ -11,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-
     bodyParser: false,
   });
 
@@ -50,7 +49,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  const port = configService.get<number>('app.port') || 4000;
-  await app.listen(port);
+  const port = configService.get<number>('app.port') || 3000;
+  await app
+    .listen(port)
+    .then(() => {
+      loggerInstance.info(`Server is running on port ${port}`);
+    })
+    .catch(error => {
+      loggerInstance.error(`Error starting server: ${error}`);
+      process.exit(1);
+    });
 }
 bootstrap();

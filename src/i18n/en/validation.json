@@ -6,5 +6,7 @@
   "min": "{property} must be at least {min}",
   "max": "{property} must not exceed {max}",
   "invalidFormat": "Invalid {property} format",
-  "isString": "{property} must be a string"
+  "isString": "{property} must be a string",
+  "isEmail": "{property} must be a valid email address",
+  "length": "{property} must be exactly {min} characters"
 }
