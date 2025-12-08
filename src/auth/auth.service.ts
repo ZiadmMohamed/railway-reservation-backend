@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ConfigService } from '@nestjs/config';
+import { LoginDTO } from './DTO/login.DTO';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -39,5 +41,20 @@ export class AuthService {
     });
 
     return result;
+  }
+
+  async login(body: LoginDTO) {
+    const result = await this.authClient.signIn.email({
+      email: body.email,
+      password: body.password,
+      rememberMe: true,
+    });
+    const user = result.data?.user;
+
+    if (!user || !user.id) {
+      throw new NotFoundException(I18nContext.current().t('auth.notFound'));
+    }
+
+    return { user, token: result.data?.token };
   }
 }
