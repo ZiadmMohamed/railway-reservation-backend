@@ -4,14 +4,13 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ConfigService } from '@nestjs/config';
 import { LoginDTO } from './DTO/login.DTO';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     // Create server-side auth client
     const baseURL = this.configService.get<string>('auth.url') || 'http://localhost:3000';
     this.authClient = createAuthClient({
@@ -51,20 +50,11 @@ export class AuthService {
       rememberMe: true,
     });
     const user = result.data?.user;
-console.log(result);
 
     if (!user || !user.id) {
-      throw new NotFoundException('user is not found or not confirmed');
+      throw new NotFoundException(I18nContext.current().t('auth.notFound'));
     }
 
-    // const access_token = this.TokenService.sign(
-    //   { payload: user.id },
-    //   { secret: process.env.jwt_secret, expiresIn: '3h' },
-    // );
-    // const refresh_token = this.TokenService.sign(
-    //   { payload: user.id },
-    //   { secret: process.env.jwt_secret, expiresIn: '1d' },
-    // );
-    return { user,token:result.data?.token };
+    return { user, token: result.data?.token };
   }
 }
