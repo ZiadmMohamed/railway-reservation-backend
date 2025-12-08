@@ -47,14 +47,13 @@ export class AuthService {
   }
 
   async login(body: LoginDTO) {
-    
     const result = await this.authClient.signIn.email({
       email: body.email,
       password: body.password,
       rememberMe: true,
     });
     const user = result.data?.user;
-    
+
     if (!user || !user.id) {
       throw new NotFoundException('user is not found or not confirmed');
     }
