@@ -16,8 +16,9 @@ export class OnboardingController {
     return this.onboardingService.getSupportedLanguages();
   }
   
-  @Get("screens")
-  getScreens(@Query("lang") lang: string = "en") {
+  @AllowAnonymous()
+  @Get('screens')
+  async getScreens(@Query("lang") lang: string = "en") {
     return this.onboardingService.getScreens(lang);
   }
 }

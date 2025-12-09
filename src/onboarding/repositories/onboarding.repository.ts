@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
 import { InjectDb } from '../../database/db.provider';
-import { onboardingScreens, onboardingTranslations } from '../../database/schemas/onboarding';
 import type { DB } from '../../database/drizzle';
+import { onboardingScreens, onboardingTranslations } from '../Schemas/onboarding.schema';
 
 @Injectable()
 export class OnboardingRepository {
