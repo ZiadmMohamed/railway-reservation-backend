@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ConfigService } from '@nestjs/config';
+import { LoginDTO } from './DTO/login.DTO';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService,
+  ) {
     // Create server-side auth client
     const baseURL = this.configService.get<string>('auth.url') || 'http://localhost:3000';
     this.authClient = createAuthClient({
@@ -27,6 +30,10 @@ export class AuthService {
       password: registerDto.password,
       name: registerDto.name,
     });
+     await this.authClient.emailOtp.sendVerificationOtp({
+          email: registerDto.email, // required
+    type: "sign-in", // required
+});
 
     return result;
   }
@@ -39,5 +46,20 @@ export class AuthService {
     });
 
     return result;
+  }
+
+  async login(body: LoginDTO) {
+    const result = await this.authClient.signIn.email({
+      email: body.email,
+      password: body.password,
+      rememberMe: true,
+    });
+    const user = result.data?.user;
+
+    if (!user || !user.id) {
+      throw new NotFoundException(I18nContext.current().t('auth.notFound'));
+    }
+
+    return { user, token: result.data?.token };
   }
 }
