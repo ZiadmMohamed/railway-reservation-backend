@@ -10,8 +10,7 @@ import { I18nContext } from 'nestjs-i18n';
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
-  constructor(private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     // Create server-side auth client
     const baseURL = this.configService.get<string>('auth.url') || 'http://localhost:3000';
     this.authClient = createAuthClient({
@@ -30,10 +29,10 @@ export class AuthService {
       password: registerDto.password,
       name: registerDto.name,
     });
-     await this.authClient.emailOtp.sendVerificationOtp({
-          email: registerDto.email, // required
-    type: "sign-in", // required
-});
+    await this.authClient.emailOtp.sendVerificationOtp({
+      email: registerDto.email, // required
+      type: 'sign-in', // required
+    });
 
     return result;
   }

@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   providers: [NodeMailerService],
-  exports:[NodeMailerService],
+  exports: [NodeMailerService],
   imports: [
     MailerModule.forRootAsync({
       imports: [ConfigModule],
@@ -25,7 +25,6 @@ import { ConfigModule } from '@nestjs/config';
         };
       },
     }),
-  
   ],
 })
 export class NodeMailerModule {}

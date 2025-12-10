@@ -1,12 +1,16 @@
-import {  NodeMailerService } from './email/email.service';
+import { NodeMailerService } from './email/email.service';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { emailOTP } from 'better-auth/plugins';
 import { ConfigService } from '@nestjs/config';
 
-export const createAuth = (db: any, configService: ConfigService, nodeMailerService: NodeMailerService) => {
-  console.log("nodeMailerService",nodeMailerService);
-  
+export const createAuth = (
+  db: any,
+  configService: ConfigService,
+  nodeMailerService: NodeMailerService,
+) => {
+  console.log('nodeMailerService', nodeMailerService);
+
   return betterAuth({
     database: drizzleAdapter(db, {
       provider: 'pg',
@@ -22,15 +26,15 @@ export const createAuth = (db: any, configService: ConfigService, nodeMailerServ
       emailOTP({
         otpLength: 6,
         expiresIn: 300, // 5 minutes
-    async    sendVerificationOTP  ({ email, otp, type }){
-          console.log(otp,email,type);
-                      await nodeMailerService.sendMail(email, otp, type);
+        async sendVerificationOTP({ email, otp, type }) {
+          console.log(otp, email, type);
+          await nodeMailerService.sendMail(email, otp, type);
 
           if (nodeMailerService) {
-            console.log("ooo",nodeMailerService);
-            
+            console.log('ooo', nodeMailerService);
+
             await nodeMailerService.sendMail(email, otp, type);
-          } 
+          }
         },
       }),
     ],
