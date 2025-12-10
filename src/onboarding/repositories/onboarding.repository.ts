@@ -56,15 +56,9 @@ export class OnboardingRepository {
     return this.db
       .select()
       .from(onboardingScreens)
-      .innerJoin(
-        onboardingTranslations,
-        eq(onboardingTranslations.screenId, onboardingScreens.id),
-      )
+      .innerJoin(onboardingTranslations, eq(onboardingTranslations.screenId, onboardingScreens.id))
       .where(
-        and(
-          eq(onboardingScreens.isActive, true),
-          eq(onboardingTranslations.languageId, language),
-        ),
+        and(eq(onboardingScreens.isActive, true), eq(onboardingTranslations.languageId, language)),
       )
       .orderBy(onboardingScreens.orderIndex);
   }

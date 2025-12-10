@@ -11,9 +11,9 @@ export const onboardingScreens = pgTable('onboarding_screens', {
 export const onboardingTranslations = pgTable('onboarding_translations', {
   id: serial('id').primaryKey(),
   screenId: integer('screen_id').references(() => onboardingScreens.id, {
-     onDelete: 'cascade',
+    onDelete: 'cascade',
   }),
-  languageId: text('language_id').references(()=> supportedLanguages.id),
+  languageId: text('language_id').references(() => supportedLanguages.id),
   title: text('title'),
   subtitle: text('subtitle'),
   primaryLabel: varchar('primary_label', { length: 255 }),

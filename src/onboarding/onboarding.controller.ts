@@ -15,10 +15,10 @@ export class OnboardingController {
   async getSupportedLanguages() {
     return this.onboardingService.getSupportedLanguages();
   }
-  
+
   @AllowAnonymous()
   @Get('screens')
-  async getScreens(@Query("lang") lang: string = "en") {
+  async getScreens(@Query('lang') lang: string = 'en') {
     return this.onboardingService.getScreens(lang);
   }
 }
