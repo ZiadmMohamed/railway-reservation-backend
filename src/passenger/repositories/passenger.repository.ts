@@ -3,8 +3,8 @@ import { and, eq } from 'drizzle-orm';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
 import { Passenger, passenger } from '../schemas/passenger.schema';
-import { CreatePassengerDto } from '../dto/create-passenger.dto';
-import { UpdatePassengerDto } from '../dto/update-passenger.dto';
+import { CreatePassenger } from '../dto/create-passenger.dto';
+import { UpdatePassenger } from '../dto/update-passenger.dto';
 
 @Injectable()
 export class PassengerRepository {
@@ -18,8 +18,8 @@ export class PassengerRepository {
    * @returns The created passenger
    */
   async create(
-    nationalId: CreatePassengerDto['nationalId'],
-    passengerName: CreatePassengerDto['passengerName'],
+    nationalId: CreatePassenger['nationalId'],
+    passengerName: CreatePassenger['passengerName'],
     userId: string,
   ) {
     const created = await this.db
@@ -73,7 +73,7 @@ export class PassengerRepository {
    * @param data - The data to update
    * @returns The updated passenger
    */
-  async update(id: string, data: UpdatePassengerDto) {
+  async update(id: string, data: UpdatePassenger) {
     const [updated] = await this.db
       .update(passenger)
       .set(data)

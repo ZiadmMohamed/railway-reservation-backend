@@ -1,17 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PassengerRepository } from './repositories/passenger.repository';
-import { UpdatePassengerDto } from './dto/update-passenger.dto';
+import { UpdatePassenger } from './dto/update-passenger.dto';
 import { Passenger } from './schemas/passenger.schema';
 
 @Injectable()
 export class PassengerService {
   constructor(private readonly passengerRepository: PassengerRepository) {}
 
-  async create(
-    nationalId: string,
-    passengerName: string,
-    userId: string = '7KwL4UDRMfjqYHZMUILdh8AO9EaVcwpe',
-  ): Promise<Passenger> {
+  async create(nationalId: string, passengerName: string, userId: string): Promise<Passenger> {
     const createdPassenger = await this.passengerRepository.create(
       nationalId,
       passengerName,
@@ -50,14 +46,10 @@ export class PassengerService {
     return passenger;
   }
 
-  async update(
-    id: string,
-    userId: string,
-    updatePassengerDto: UpdatePassengerDto,
-  ): Promise<Passenger> {
+  async update(id: string, userId: string, updatePassenger: UpdatePassenger): Promise<Passenger> {
     await this.findOne(id, userId);
 
-    const updatedPassenger = await this.passengerRepository.update(id, updatePassengerDto);
+    const updatedPassenger = await this.passengerRepository.update(id, updatePassenger);
     if (!updatedPassenger) throw new BadRequestException('Failed to update passenger');
 
     return updatedPassenger;

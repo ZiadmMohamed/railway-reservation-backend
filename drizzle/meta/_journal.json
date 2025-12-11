@@ -47,8 +47,8 @@
     {
       "idx": 6,
       "version": "7",
-      "when": 1765047203351,
-      "tag": "0006_striped_tyrannus",
+      "when": 1765455207230,
+      "tag": "0006_create_passenger_table.sql",
       "breakpoints": true
     }
   ]

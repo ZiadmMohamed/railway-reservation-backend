@@ -21,7 +21,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('Trains')
 @AllowAnonymous()
-@Controller('api/trains')
+@Controller('trains')
 export class TrainsController {
   constructor(private readonly trainsService: TrainsService) {}
 

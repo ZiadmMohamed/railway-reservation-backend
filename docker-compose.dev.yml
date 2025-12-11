@@ -16,6 +16,29 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    container_name: railway-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://railway:railway@postgres:5432/railway
+      - PORT=3000
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./logs:/usr/src/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run start:dev
+
   studio:
     container_name: railway-studio
     build:

@@ -12,36 +12,35 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PassengerService } from './passenger.service';
-import { CreatePassengerDto } from './dto/create-passenger.dto';
-import { UpdatePassengerDto } from './dto/update-passenger.dto';
-import { PassengerDto } from './dto/passenger-response.dto';
+import { CreatePassenger } from './dto/create-passenger.dto';
+import { UpdatePassenger } from './dto/update-passenger.dto';
+import { Passenger } from './dto/passenger.dto';
 import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
-import { ResponseDto } from 'src/common/dtos/response.dto';
+import { SinglePassengerResponseDto, PassengerListResponseDto } from './dto/passenger-response.dto';
 
 @ApiTags('Passengers')
-@Controller('api/passengers')
+@Controller('passengers')
 export class PassengerController {
   constructor(private readonly passengerService: PassengerService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @Body() createPassengerDto: CreatePassengerDto,
+    @Body() createPassenger: CreatePassenger,
     @Session() session: UserSession,
-  ): Promise<ResponseDto> {
+  ): Promise<SinglePassengerResponseDto> {
     const userId = session.user.id;
-    console.log(userId);
 
     const passenger = await this.passengerService.create(
-      createPassengerDto.nationalId,
-      createPassengerDto.passengerName,
+      createPassenger.nationalId,
+      createPassenger.passengerName,
       userId,
     );
 
     return {
       message: 'Passenger created successfully',
-      data: new PassengerDto(passenger),
+      data: new Passenger(passenger),
     };
   }
 
@@ -49,36 +48,40 @@ export class PassengerController {
   async findAll(
     @Query() query: PaginationQueryParams,
     @Session() session: UserSession,
-  ): Promise<ResponseDto> {
+  ): Promise<PassengerListResponseDto> {
     const result = await this.passengerService.findAll(session.user.id, query.page, query.limit);
 
     return {
       message: 'Passengers list',
-      ...result,
+      data: Passenger.fromArray(result.data),
+      meta: result.meta,
     };
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updatePassengerDto: UpdatePassengerDto,
+    @Body() updatePassenger: UpdatePassenger,
     @Session() session: UserSession,
-  ): Promise<ResponseDto> {
+  ): Promise<SinglePassengerResponseDto> {
     const updatedPassenger = await this.passengerService.update(
       id,
       session.user.id,
-      updatePassengerDto,
+      updatePassenger,
     );
 
     return {
       message: 'Passenger updated successfully',
-      data: new PassengerDto(updatedPassenger),
+      data: new Passenger(updatedPassenger),
     };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string, @Session() session: UserSession): Promise<ResponseDto> {
+  async remove(
+    @Param('id') id: string,
+    @Session() session: UserSession,
+  ): Promise<SinglePassengerResponseDto> {
     await this.passengerService.remove(id, session.user.id);
 
     return {
