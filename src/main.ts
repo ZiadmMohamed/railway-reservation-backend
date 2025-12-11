@@ -38,6 +38,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('v1/api', { exclude: ['health'] });
+
   const config = new DocumentBuilder()
     .setTitle('Railway API')
     .addBearerAuth()

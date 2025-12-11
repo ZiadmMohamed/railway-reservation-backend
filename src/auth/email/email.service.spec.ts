@@ -8,7 +8,6 @@ jest.mock('nodemailer');
 
 describe('EmailService', () => {
   let service: EmailService;
-  let configService: ConfigService;
   let mockTransporter: any;
   let mockSendMail: jest.Mock;
 
@@ -150,7 +149,6 @@ describe('EmailService', () => {
       }).compile();
 
       service = module.get<EmailService>(EmailService);
-      configService = module.get<ConfigService>(ConfigService);
     });
 
     it('should send OTP email successfully', async () => {
