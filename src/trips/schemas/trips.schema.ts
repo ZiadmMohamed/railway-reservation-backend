@@ -44,4 +44,3 @@ export const tripsRelations = relations(trips, ({ one, many }) => ({
   tripStops: many(tripStops),
   tickets: many(tickets),
 }));
-

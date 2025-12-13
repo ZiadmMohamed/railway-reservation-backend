@@ -36,4 +36,3 @@ export const tripStopsRelations = relations(tripStops, ({ one }) => ({
     references: [stations.id],
   }),
 }));
-
