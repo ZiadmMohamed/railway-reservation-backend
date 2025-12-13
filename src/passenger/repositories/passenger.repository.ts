@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
-import { Passenger, passenger } from '../schemas/passenger.schema';
+import { Passenger, passengers } from '../schemas/passenger.schema';
 import { CreatePassenger } from '../dto/create-passenger.dto';
 import { UpdatePassenger } from '../dto/update-passenger.dto';
 
@@ -23,7 +23,7 @@ export class PassengerRepository {
     userId: string,
   ) {
     const created = await this.db
-      .insert(passenger)
+      .insert(passengers)
       .values({ nationalId, passengerName, userId })
       .onConflictDoNothing()
       .returning();
@@ -39,9 +39,9 @@ export class PassengerRepository {
   async findAll(userId: string, page: number, limit: number) {
     const offset = (page - 1) * limit;
 
-    const passengers = await this.db.select().from(passenger).limit(limit).offset(offset);
+    const passengersList = await this.db.select().from(passengers).limit(limit).offset(offset);
 
-    return passengers;
+    return passengersList;
   }
 
   /**
@@ -49,7 +49,7 @@ export class PassengerRepository {
    * @returns The number of passengers
    */
   async count(userId: string) {
-    const result = await this.db.select().from(passenger).where(eq(passenger.userId, userId));
+    const result = await this.db.select().from(passengers).where(eq(passengers.userId, userId));
     return result.length;
   }
 
@@ -62,8 +62,8 @@ export class PassengerRepository {
   async findOne(id: string, userId: string): Promise<Passenger | null> {
     const [result] = await this.db
       .select()
-      .from(passenger)
-      .where(and(eq(passenger.id, id), eq(passenger.userId, userId)));
+      .from(passengers)
+      .where(and(eq(passengers.id, id), eq(passengers.userId, userId)));
     return result ?? null;
   }
 
@@ -75,9 +75,9 @@ export class PassengerRepository {
    */
   async update(id: string, data: UpdatePassenger) {
     const [updated] = await this.db
-      .update(passenger)
+      .update(passengers)
       .set(data)
-      .where(eq(passenger.id, id))
+      .where(eq(passengers.id, id))
       .returning();
 
     return updated;
@@ -88,6 +88,8 @@ export class PassengerRepository {
    * @param id - The id of the passenger
    */
   async delete(id: string, userId: string) {
-    await this.db.delete(passenger).where(and(eq(passenger.id, id), eq(passenger.userId, userId)));
+    await this.db
+      .delete(passengers)
+      .where(and(eq(passengers.id, id), eq(passengers.userId, userId)));
   }
 }
