@@ -5,7 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { AllowAnonymous } from './decorators/public.decorator';
 import { LoginDTO } from './DTO/login.DTO';
-import { I18n, I18nContext, i18nValidationErrorFactory } from 'nestjs-i18n';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('Authentication')
 @Controller('auth')
