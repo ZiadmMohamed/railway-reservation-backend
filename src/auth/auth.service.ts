@@ -29,6 +29,10 @@ export class AuthService {
       password: registerDto.password,
       name: registerDto.name,
     });
+    await this.authClient.emailOtp.sendVerificationOtp({
+      email: registerDto.email, // required
+      type: 'sign-in', // required
+    });
 
     return result;
   }
