@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { eq, inArray, and } from 'drizzle-orm';
-import { train } from '../schemas/train.schema';
+import { trains } from '../schemas/train.schema';
 import { trainTranslations } from '../schemas/train-translations.schema';
 import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
-import { randomUUID } from 'crypto';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
 
@@ -20,51 +19,22 @@ export class TrainsRepository {
    */
   async create(
     data: {
-      number: string;
-      totalSeats: string;
-      availableSeats: string;
-    },
-    translation: { name: string; source: string; destination: string },
-    locale: string,
-  ) {
-    const id = randomUUID();
-    const newTrain = { id, ...data };
-
-    // Get language ID from locale code using a query
-    const [language] = await this.db
-      .select({ id: supportedLanguages.id })
-      .from(supportedLanguages)
-      .where(eq(supportedLanguages.code, locale))
-      .limit(1);
-
-    if (!language) {
-      throw new Error(`Language with code '${locale}' not found`);
+      trainNumber: string;
     }
+  ) {
+    // Get language ID from locale code using a query
+   
 
     // Create train and translation in a transaction
-    const [created] = await this.db.insert(train).values(newTrain).returning();
+    const [created] = await this.db.insert(trains).values(data).returning();
 
-    // Create translation
-    await this.db.insert(trainTranslations).values({
-      id: randomUUID(),
-      trainId: id,
-      languageId: language.id,
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
-    });
+  
 
     return {
       ...created,
-      translations: {
-        [locale]: translation,
-      },
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
-    };
-  }
-
+    
+      }
+    }
   /**
    * Find all trains with translations
    * @param page - The page number
@@ -77,8 +47,8 @@ export class TrainsRepository {
 
     // 1. Get IDs for pagination (to avoid duplicating rows in limit/offset due to join)
     const trainIdsResult = await this.db
-      .select({ id: train.id })
-      .from(train)
+      .select({ id: trains.id })
+      .from(trains)
       .limit(limit)
       .offset(offset);
 
@@ -91,19 +61,19 @@ export class TrainsRepository {
     // 2. Fetch trains and translations with language info
     const rows = await this.db
       .select()
-      .from(train)
-      .leftJoin(trainTranslations, eq(trainTranslations.trainId, train.id))
+      .from(trains)
+      .leftJoin(trainTranslations, eq(trainTranslations.trainId, trains.id))
       .leftJoin(supportedLanguages, eq(trainTranslations.languageId, supportedLanguages.id))
-      .where(inArray(train.id, trainIds));
+      .where(inArray(trains.id, trainIds));
 
     // 3. Aggregate results
     const trainsMap = new Map<string, any>();
 
     for (const row of rows) {
-      const trainId = row.train.id;
+      const trainId = row.trains.id;
       if (!trainsMap.has(trainId)) {
         trainsMap.set(trainId, {
-          ...row.train,
+          ...row.trains,
           translations: {},
         });
       }
@@ -138,7 +108,7 @@ export class TrainsRepository {
    * @returns The number of trains
    */
   async count() {
-    const result = await this.db.select().from(train);
+    const result = await this.db.select().from(trains);
     return result.length;
   }
 
@@ -151,16 +121,16 @@ export class TrainsRepository {
   async findOne(id: string, locale?: string) {
     const rows = await this.db
       .select()
-      .from(train)
-      .leftJoin(trainTranslations, eq(trainTranslations.trainId, train.id))
+      .from(trains)
+      .leftJoin(trainTranslations, eq(trainTranslations.trainId, trains.id))
       .leftJoin(supportedLanguages, eq(trainTranslations.languageId, supportedLanguages.id))
-      .where(eq(train.id, id));
+      .where(eq(trains.id, id));
 
     if (rows.length === 0) {
       return null;
     }
 
-    const trainData = rows[0].train;
+    const trainData = rows[0].trains;
     const translationsMap: Record<string, any> = {};
 
     for (const row of rows) {
@@ -197,9 +167,7 @@ export class TrainsRepository {
   async update(
     id: string,
     data: Partial<{
-      number: string;
-      totalSeats: string;
-      availableSeats: string;
+      trainNumber: string;
     }>,
     translation: Partial<{ name: string; source: string; destination: string }>,
     locale: string,
@@ -208,12 +176,12 @@ export class TrainsRepository {
     let updated = null;
     if (Object.keys(data).length > 0) {
       [updated] = await this.db
-        .update(train)
+        .update(trains)
         .set({ ...data })
-        .where(eq(train.id, id))
+        .where(eq(trains.id, id))
         .returning();
     } else {
-      [updated] = await this.db.select().from(train).where(eq(train.id, id));
+      [updated] = await this.db.select().from(trains).where(eq(trains.id, id));
     }
 
     // Handle translation update/insert
@@ -253,7 +221,6 @@ export class TrainsRepository {
         // I'll assume for now that if creating a new locale, the user provides all fields, or I'll default to empty string if not provided (since I set default '' in migration).
 
         await this.db.insert(trainTranslations).values({
-          id: randomUUID(),
           trainId: id,
           languageId: language.id,
           name: translation.name || '',
@@ -302,6 +269,6 @@ export class TrainsRepository {
   async delete(id: string) {
     // Delete translations first (due to foreign key constraint)
     await this.db.delete(trainTranslations).where(eq(trainTranslations.trainId, id));
-    await this.db.delete(train).where(eq(train.id, id));
+    await this.db.delete(trains).where(eq(trains.id, id));
   }
 }

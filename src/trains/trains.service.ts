@@ -8,19 +8,12 @@ import { I18nContext } from 'nestjs-i18n';
 export class TrainsService {
   constructor(private readonly trainsRepository: TrainsRepository) {}
 
-  async create(createTrainDto: CreateTrainDto, locale: string) {
+  async create(createTrainDto: CreateTrainDto) {
     return this.trainsRepository.create(
       {
-        number: createTrainDto.number,
-        totalSeats: createTrainDto.totalSeats,
-        availableSeats: createTrainDto.totalSeats, // Initially all seats are available
-      },
-      {
-        name: createTrainDto.name,
-        source: createTrainDto.source,
-        destination: createTrainDto.destination,
-      },
-      locale,
+        trainNumber: createTrainDto.trainNumber
+        
+      }
     );
   }
 
@@ -54,30 +47,30 @@ export class TrainsService {
     return train;
   }
 
-  async update(id: string, updateTrainDto: UpdateTrainDto, locale: string) {
-    // Check if train exists
-    await this.findOne(id);
+//   async update(id: string, updateTrainDto: UpdateTrainDto, locale: string) {
+//     // Check if train exists
+//     await this.findOne(id);
 
-    const updateData: any = {};
-    if (updateTrainDto.number !== undefined) updateData.number = updateTrainDto.number;
+//     const updateData: any = {};
+//     if (updateTrainDto.number !== undefined) updateData.number = updateTrainDto.number;
 
-    // Handle totalSeats update
-    if (updateTrainDto.totalSeats !== undefined) {
-      const existing = await this.trainsRepository.findOne(id);
-      updateData.totalSeats = updateTrainDto.totalSeats;
-      // Recalculate available seats if total seats changed
-      const seatsDiff = parseInt(updateTrainDto.totalSeats) - parseInt(existing.totalSeats);
-      updateData.availableSeats = (parseInt(existing.availableSeats) + seatsDiff).toString();
-    }
+//     // Handle totalSeats update
+//     if (updateTrainDto.totalSeats !== undefined) {
+//       const existing = await this.trainsRepository.findOne(id);
+//       updateData.totalSeats = updateTrainDto.totalSeats;
+//       // Recalculate available seats if total seats changed
+//       const seatsDiff = parseInt(updateTrainDto.totalSeats) - parseInt(existing.totalSeats);
+//       updateData.availableSeats = (parseInt(existing.availableSeats) + seatsDiff).toString();
+//     }
 
-    const translationData = {
-      name: updateTrainDto.name,
-      source: updateTrainDto.source,
-      destination: updateTrainDto.destination,
-    };
+//     const translationData = {
+//       name: updateTrainDto.name,
+//       source: updateTrainDto.source,
+//       destination: updateTrainDto.destination,
+//     };
 
-    return this.trainsRepository.update(id, updateData, translationData, locale);
-  }
+//     return this.trainsRepository.update(id, updateData, translationData, locale);
+//   }
 
   async remove(id: string) {
     await this.findOne(id); // Throws if not found

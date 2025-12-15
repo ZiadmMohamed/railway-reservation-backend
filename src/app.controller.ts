@@ -15,7 +15,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('api/health')
+  @Get('health')
   @AllowAnonymous()
   @ApiOperation({ summary: 'Health check endpoint' })
   getHealth(): { status: string; timestamp: string } {

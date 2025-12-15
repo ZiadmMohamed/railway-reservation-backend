@@ -6,6 +6,7 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { AllowAnonymous } from './decorators/public.decorator';
 import { LoginDTO } from './DTO/login.DTO';
 import { I18n, I18nContext, i18nValidationErrorFactory } from 'nestjs-i18n';
+import { createRoleDTO } from './DTO/create.role.DTO';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -23,6 +24,18 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
+  // @AllowAnonymous()
+  // @Post('make-role')
+  // @ApiOperation({ summary: 'make a Role' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'create role successfully..',
+  // })
+  // @ApiResponse({ status: 400, description: 'falid to  make a Role' })
+  // async createRole(@Body() body:createRoleDTO){
+  //   await this.authService.createRole(body)
+
+  // }
 
   @AllowAnonymous()
   @Post('verify-otp')

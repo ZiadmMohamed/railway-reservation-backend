@@ -8,12 +8,9 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [TrainsController],
   imports: [AuthModule],
   providers: [
-    {
-      provide: TrainsRepository,
-      inject: ['DATABASE'],
-      useFactory: (db: any) => new TrainsRepository(db),
-    },
+   TrainsRepository,
     TrainsService,
+    
   ],
   exports: [TrainsService],
 })

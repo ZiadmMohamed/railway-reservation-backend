@@ -5,6 +5,7 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ConfigService } from '@nestjs/config';
 import { LoginDTO } from './DTO/login.DTO';
 import { I18nContext } from 'nestjs-i18n';
+import { createRoleDTO } from './DTO/create.role.DTO';
 
 @Injectable()
 export class AuthService {
@@ -30,13 +31,21 @@ export class AuthService {
       password: registerDto.password,
       name: registerDto.name,
     });
-     await this.authClient.emailOtp.sendVerificationOtp({
+    await this.authClient.emailOtp.sendVerificationOtp({
           email: registerDto.email, // required
     type: "sign-in", // required
 });
-
     return result;
   }
+//   async createRole(body:createRoleDTO){
+//     await this.authClient.admin.createUser({
+//     email: "user@example.com", // required
+//     password: "some-secure-password", // required
+//     name: "James Smith", // required
+//     role: "user",
+//     data: { customField: "customValue" },
+// });
+//   }
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     // Use better-auth's verifyEmail endpoint

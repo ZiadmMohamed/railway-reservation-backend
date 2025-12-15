@@ -1,7 +1,7 @@
 import {  NodeMailerService } from './email/email.service';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { emailOTP } from 'better-auth/plugins';
+import { admin, emailOTP } from 'better-auth/plugins';
 import { ConfigService } from '@nestjs/config';
 
 export const createAuth = (db: any, configService: ConfigService, nodeMailerService: NodeMailerService) => {
@@ -18,17 +18,16 @@ export const createAuth = (db: any, configService: ConfigService, nodeMailerServ
     secret: configService.get<string>('auth.secret')!,
     baseURL: configService.get<string>('auth.url') || 'http://localhost:3000',
     basePath: configService.get<string>('auth.basePath') || '/api/auth',
-    plugins: [
+    plugins: [     admin() ,
       emailOTP({
         otpLength: 6,
         expiresIn: 300, // 5 minutes
     async    sendVerificationOTP  ({ email, otp, type }){
           console.log(otp,email,type);
-                      await nodeMailerService.sendMail(email, otp, type);
 
-          if (nodeMailerService) {
+          if (type === "sign-in") {
             console.log("ooo",nodeMailerService);
-            
+             
             await nodeMailerService.sendMail(email, otp, type);
           } 
         },

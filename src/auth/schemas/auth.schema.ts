@@ -4,11 +4,14 @@
 
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { passengers } from '../../passenger/schemas/passenger.schema';
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
+  role: text('role').default("user"),
+  banned: boolean('banned').default(false).notNull(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -80,6 +83,7 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  passengers: many(passengers),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
