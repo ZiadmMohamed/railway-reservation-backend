@@ -32,8 +32,8 @@ async CreateTrip(@Body() body:CreateTripDTO){
     status: 201,
    description: 'trip updated successfully',
   })
-  // @Roles(["admin"])
-// @UseGuards(AuthGuard)
+  @Roles(["admin"])
+@UseGuards(AuthGuard)
 @AllowAnonymous()
   async update(
     @Param('id') id: string,
