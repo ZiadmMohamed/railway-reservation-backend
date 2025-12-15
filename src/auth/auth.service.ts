@@ -4,7 +4,7 @@ import { NotFoundException } from '@nestjs/common';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
-import { LoginDTO } from './DTO/login.DTO';
+import { LoginDTO } from './dto/login.DTO';
 import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
