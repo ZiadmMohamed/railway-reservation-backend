@@ -1,40 +1,46 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
   constructor(private readonly configService: ConfigService) {
-    // Create server-side auth client
-    const baseURL = this.configService.get<string>('auth.url') || 'http://localhost:3000';
+    const baseURL =
+      this.configService.get<string>('AUTH_URL') ||
+      this.configService.get<string>('auth.url') ||
+      'http://localhost:3000';
+
     this.authClient = createAuthClient({
       baseURL,
-      fetchOptions: {
-        credentials: 'include',
-      },
+      fetchOptions: { credentials: 'include' },
     });
   }
 
   async register(registerDto: RegisterDto) {
-    // Use better-auth's signup endpoint
-    // This will automatically trigger OTP email sending via the emailOTP plugin
+
     const result = await this.authClient.signUp.email({
       email: registerDto.email,
       password: registerDto.password,
       name: registerDto.name,
     });
 
+    await this.authClient.emailOtp.sendVerificationOtp({
+      email: registerDto.email,
+      type: 'email-verification',
+    });
+
     return result;
   }
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
-    // Use better-auth's verifyEmail endpoint
-    const result = await this.authClient.verifyEmail({
+
+    const result = await this.authClient.emailOtp.checkVerificationOtp({
       email: verifyOtpDto.email,
+      type: 'email-verification',
       otp: verifyOtpDto.otp,
     });
 
