@@ -25,4 +25,4 @@ jobs:
         uses: Slashgear/action-check-pr-title@v5.0.1
         with:
           regexp: '^(fix|release|feat|hotfix|build|test)\(([A-Z]+-[0-9]+|JIRA-[0-9]+)\): .+'
-          helpMessage: "Example: fix(ENR-2): Setup Authentication"
+          helpMessage: 'Example: fix(ENR-2): Setup Authentication'
