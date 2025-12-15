@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {  NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
