@@ -21,7 +21,6 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-
     const result = await this.authClient.signUp.email({
       email: registerDto.email,
       password: registerDto.password,
@@ -37,7 +36,6 @@ export class AuthService {
   }
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
-
     const result = await this.authClient.emailOtp.checkVerificationOtp({
       email: verifyOtpDto.email,
       type: 'email-verification',
