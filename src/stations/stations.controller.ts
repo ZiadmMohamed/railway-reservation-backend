@@ -16,7 +16,7 @@ export class StationController{
 @HttpCode(HttpStatus.CREATED)
 
 // @AllowAnonymous()
-// @Roles(["admin"])
+@Roles(["admin"])
  @ApiOperation({ summary: 'Create a new satiton' })
  @ApiBearerAuth()
  @ApiResponse({

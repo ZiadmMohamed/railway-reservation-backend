@@ -28,9 +28,10 @@ export class TrainsController {
   constructor(private readonly trainsService: TrainsService) {}
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(AuthGuard)
+//   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Roles(["admin"])
+//   @Roles(["admin"])
+@AllowAnonymous()
   @ApiOperation({ summary: 'Create a new train' })
   @ApiResponse({
     status: 201,

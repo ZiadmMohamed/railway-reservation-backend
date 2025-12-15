@@ -40,7 +40,6 @@ export class TripsService {
         return trip;
       }
     async Updatetrip(id:string,
-      userId:string,
       body:UpdateTripDto){
 await this.findOne(id)
  const updatedtrip = await this.tripsRepo.update(id, body);
