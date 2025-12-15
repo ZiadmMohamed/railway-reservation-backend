@@ -52,6 +52,14 @@ export class PassengerRepository {
     const result = await this.db.select().from(passengers).where(eq(passengers.userId, userId));
     return result.length;
   }
+
+
+  /**
+   * Find a passenger by id
+   * @param id - The id of the passenger
+   * @param userId - The id of the user
+   * @returns The passenger or null if not found
+   */
   async findOne(id: string, userId: string): Promise<Passenger | null> {
     const [result] = await this.db
       .select()
@@ -65,6 +73,7 @@ export class PassengerRepository {
    * @param userId - The id of the user
    * @returns The passenger or null if not found
    */
+
 
 
   /**

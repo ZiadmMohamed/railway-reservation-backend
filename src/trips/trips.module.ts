@@ -10,5 +10,6 @@ import { stationRepo } from 'src/stations/repository/station.repo';
   providers: [TripsService,TrainsRepository,TripsRepo,stationRepo],
   exports: [],
   controllers: [TripsController],
+
 })
 export class TripsModule {}

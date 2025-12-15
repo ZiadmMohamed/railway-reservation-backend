@@ -19,4 +19,7 @@ export const trains = pgTable('trains', {
 export const trainsRelations = relations(trains, ({ many }) => ({
   seats: many(seats),
   trips: many(trips),
+
+  translations: many(trainTranslations),
+
 }));

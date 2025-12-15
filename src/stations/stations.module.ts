@@ -6,6 +6,7 @@ import { stationRepo } from './repository/station.repo';
 @Module({
   controllers:[StationController],
   providers: [StationService,stationRepo],
+
   exports: [],
 })
 export class StationsModule {}

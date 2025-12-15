@@ -4,6 +4,7 @@ import { TrainsController } from './trains.controller';
 import { TrainsRepository } from './repositories/trains.repository';
 import { AuthModule } from 'src/auth/auth.module';
 
+
 @Module({
   controllers: [TrainsController],
   imports: [AuthModule],
@@ -15,3 +16,4 @@ import { AuthModule } from 'src/auth/auth.module';
   exports: [TrainsService],
 })
 export class TrainsModule {}
+
