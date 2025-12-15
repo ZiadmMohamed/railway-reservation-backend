@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createAuthClient } from 'better-auth/client';
+import { eq } from 'drizzle-orm';
 import { RegisterDto } from './dto/register.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { user } from './schemas/auth.schema';
 
 @Injectable()
 export class AuthService {
   private authClient: ReturnType<typeof createAuthClient>;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject('DATABASE') private readonly db: any,
+  ) {
     const baseURL =
       this.configService.get<string>('AUTH_URL') ||
       this.configService.get<string>('auth.url') ||
@@ -36,12 +42,44 @@ export class AuthService {
   }
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
-    const result = await this.authClient.emailOtp.checkVerificationOtp({
+    return this.authClient.emailOtp.checkVerificationOtp({
       email: verifyOtpDto.email,
       type: 'email-verification',
       otp: verifyOtpDto.otp,
     });
+  }
 
-    return result;
+  async forgotPassword(email: string) {
+    const found = await this.db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.email, email))
+      .limit(1);
+
+    if (found.length === 0) {
+      throw new BadRequestException('This email is not registered.');
+    }
+
+    const result = await this.authClient.forgetPassword.emailOtp({ email });
+
+    if ((result as any)?.error) {
+      throw new BadRequestException((result as any).error?.message || 'Failed to send OTP.');
+    }
+
+    return { message: 'OTP sent' };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const result = await this.authClient.emailOtp.resetPassword({
+      email: dto.email,
+      otp: dto.otp,
+      password: dto.password,
+    });
+
+    if ((result as any)?.error) {
+      throw new BadRequestException((result as any).error?.message || 'Invalid or expired OTP.');
+    }
+
+    return { message: 'Password reset successfully' };
   }
 }
