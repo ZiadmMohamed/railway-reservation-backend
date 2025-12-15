@@ -23,6 +23,17 @@ import * as path from 'path';
 
 @Module({
   imports: [
+    // Authmodule.forRoot({
+    //   auth: {
+    //     options: {
+    //       trustedOrigins: [],
+    //     },
+
+    //     secret: process.env.JWT_SECRET,
+    //     signOptions: { expiresIn: '1d' },
+    //     hashStrategy: 'bcrypt',
+    //   },
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, databaseConfig, authConfig, emailConfig],
