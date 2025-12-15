@@ -24,6 +24,7 @@ describe('AuthController', () => {
     verifyOtp: jest.fn(),
     forgotPassword: jest.fn(),
     resetPassword: jest.fn(),
+    changePassword: jest.fn(),
   };
 
   const mockConfigService = {
@@ -166,6 +167,37 @@ describe('AuthController', () => {
       mockAuthService.resetPassword.mockRejectedValue(error);
 
       await expect(controller.resetPassword(dto)).rejects.toThrow('Invalid or expired OTP.');
+    });
+  });
+  describe('changePassword', () => {
+    it('should call authService.changePassword', async () => {
+      const dto = {
+        currentPassword: 'old',
+        newPassword: 'newPass123',
+        confirmPassword: 'newPass123',
+      };
+
+      const expected = { message: 'Password updated successfully' };
+      mockAuthService.changePassword.mockResolvedValue(expected);
+
+      const result = await controller.changePassword(dto as any);
+
+      expect(authService.changePassword).toHaveBeenCalledWith(dto);
+      expect(result).toEqual(expected);
+    });
+
+    it('should handle changePassword errors', async () => {
+      const dto = {
+        currentPassword: 'wrong',
+        newPassword: 'newPass123',
+        confirmPassword: 'newPass123',
+      };
+
+      mockAuthService.changePassword.mockRejectedValue(new Error('Incorrect current password.'));
+
+      await expect(controller.changePassword(dto as any)).rejects.toThrow(
+        'Incorrect current password.',
+      );
     });
   });
 });

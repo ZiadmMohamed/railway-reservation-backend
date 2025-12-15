@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createAuthClient } from 'better-auth/client';
 import { eq } from 'drizzle-orm';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -9,6 +10,7 @@ import { user } from './schemas/auth.schema';
 
 @Injectable()
 export class AuthService {
+  [x: string]: any;
   private authClient: ReturnType<typeof createAuthClient>;
 
   constructor(
@@ -81,5 +83,29 @@ export class AuthService {
     }
 
     return { message: 'Password reset successfully' };
+  }
+
+  async changePassword(dto: ChangePasswordDto) {
+    if (dto.newPassword !== dto.confirmPassword) {
+      throw new BadRequestException('Passwords do not match.');
+    }
+
+    const result = await this.authClient.changePassword({
+      currentPassword: dto.currentPassword,
+      newPassword: dto.newPassword,
+      revokeOtherSessions: false,
+    });
+
+    if ((result as any)?.error) {
+      const msg = (result as any).error?.message || 'Failed to change password.';
+
+      if (msg.toLowerCase().includes('current') || msg.toLowerCase().includes('password')) {
+        throw new BadRequestException('Incorrect current password.');
+      }
+
+      throw new BadRequestException(msg);
+    }
+
+    return { message: 'Password updated successfully' };
   }
 }
