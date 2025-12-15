@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { AllowAnonymous } from './decorators/public.decorator';
-import { LoginDTO } from './DTO/login.DTO';
+import { LoginDTO } from './dto/login.DTO';
 import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('Authentication')
