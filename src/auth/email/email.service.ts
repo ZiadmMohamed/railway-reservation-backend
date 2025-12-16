@@ -9,10 +9,9 @@ export class NodeMailerService {
     private readonly configService: ConfigService,
   ) {}
 
-   async sendMail(email:string, otp:string, type:string): Promise<void> {
-    
+  async sendMail(email: string, otp: string, type: string): Promise<void> {
     await this.mailerService.sendMail({
-      from: `"User Feedback" <noreply@feedback.com>`,
+      from: '"User Feedback" <noreply@feedback.com>',
       to: email, // list of receivers
       subject: type, // Subject line
       html: `
@@ -23,5 +22,4 @@ export class NodeMailerService {
         `,
     });
   }
-
 }

@@ -53,7 +53,6 @@ export class PassengerRepository {
     return result.length;
   }
 
-
   /**
    * Find a passenger by id
    * @param id - The id of the passenger
