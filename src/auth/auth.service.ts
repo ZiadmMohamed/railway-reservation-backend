@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { NotFoundException } from '@nestjs/common';
 import { createAuthClient } from 'better-auth/client';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { LoginDTO } from './dto/login.DTO';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +34,10 @@ export class AuthService {
       email: registerDto.email,
       type: 'email-verification',
     });
+    await this.authClient.emailOtp.sendVerificationOtp({
+      email: registerDto.email, // required
+      type: 'sign-in', // required
+    });
 
     return result;
   }
@@ -43,5 +50,20 @@ export class AuthService {
     });
 
     return result;
+  }
+
+  async login(body: LoginDTO) {
+    const result = await this.authClient.signIn.email({
+      email: body.email,
+      password: body.password,
+      rememberMe: true,
+    });
+    const user = result.data?.user;
+
+    if (!user || !user.id) {
+      throw new NotFoundException(I18nContext.current().t('auth.notFound'));
+    }
+
+    return { user, token: result.data?.token };
   }
 }
