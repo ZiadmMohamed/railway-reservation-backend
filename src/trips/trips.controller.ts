@@ -7,12 +7,11 @@ import {
   Param,
   Patch,
   Post,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTripDTO } from './DTO/create-trip.DTO';
-import { AllowAnonymous, AuthGuard, Roles, UserSession } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous, AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
 import { UpdateTripDto } from './DTO/update.trip.DTO';
 @ApiTags('trips')
 @Controller('trips')
