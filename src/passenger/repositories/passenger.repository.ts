@@ -73,8 +73,6 @@ export class PassengerRepository {
    * @returns The passenger or null if not found
    */
 
-
-
   /**
    * Update a passenger
    * @param id - The id of the passenger

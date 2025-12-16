@@ -22,17 +22,18 @@ export const createAuth = (
     secret: configService.get<string>('auth.secret')!,
     baseURL: configService.get<string>('auth.url') || 'http://localhost:3000',
     basePath: configService.get<string>('auth.basePath') || '/api/auth',
-    plugins: [     admin() ,
+    plugins: [
+      admin(),
       bearer(),
       emailOTP({
         otpLength: 6,
         expiresIn: 300, // 5 minutes
-    async    sendVerificationOTP  ({ email, otp, type }){
-          console.log(otp,email,type);
+        async sendVerificationOTP({ email, otp, type }) {
+          console.log(otp, email, type);
 
-          if (type === "sign-in") {
-            console.log("ooo",nodeMailerService);
-             
+          if (type === 'sign-in') {
+            console.log('ooo', nodeMailerService);
+
             await nodeMailerService.sendMail(email, otp, type);
           }
         },

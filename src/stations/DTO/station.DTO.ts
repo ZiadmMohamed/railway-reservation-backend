@@ -11,7 +11,6 @@ export class CreateStationDto {
   @IsString()
   @IsNotEmpty({ message: 'Station Arabic name is required.' })
   @MaxLength(100)
-    @ApiProperty()
-
+  @ApiProperty()
   stationArabicName: string;
 }

@@ -42,15 +42,15 @@ export class AuthService {
 
     return result;
   }
-//   async createRole(body:createRoleDTO){
-//     await this.authClient.admin.createUser({
-//     email: "user@example.com", // required
-//     password: "some-secure-password", // required
-//     name: "James Smith", // required
-//     role: "user",
-//     data: { customField: "customValue" },
-// });
-//   }
+  //   async createRole(body:createRoleDTO){
+  //     await this.authClient.admin.createUser({
+  //     email: "user@example.com", // required
+  //     password: "some-secure-password", // required
+  //     name: "James Smith", // required
+  //     role: "user",
+  //     data: { customField: "customValue" },
+  // });
+  //   }
 
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     const result = await this.authClient.emailOtp.checkVerificationOtp({

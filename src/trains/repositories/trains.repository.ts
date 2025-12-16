@@ -17,24 +17,16 @@ export class TrainsRepository {
    * @param locale - The locale for the translation
    * @returns The created train with translation
    */
-  async create(
-    data: {
-      trainNumber: string;
-    }
-  ) {
+  async create(data: { trainNumber: string }) {
     // Get language ID from locale code using a query
-   
 
     // Create train and translation in a transaction
     const [created] = await this.db.insert(trains).values(data).returning();
 
-  
-
     return {
       ...created,
-    
-      }
-    }
+    };
+  }
   /**
    * Find all trains with translations
    * @param page - The page number

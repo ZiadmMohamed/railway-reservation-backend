@@ -6,10 +6,8 @@ import { TripsRepo } from './repository/trips.repo';
 import { stationRepo } from 'src/stations/repository/station.repo';
 
 @Module({
-  
-  providers: [TripsService,TrainsRepository,TripsRepo,stationRepo],
+  providers: [TripsService, TrainsRepository, TripsRepo, stationRepo],
   exports: [],
   controllers: [TripsController],
-
 })
 export class TripsModule {}

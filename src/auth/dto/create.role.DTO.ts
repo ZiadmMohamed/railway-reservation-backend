@@ -29,7 +29,7 @@ export class createRoleDTO {
     minLength: 6,
   })
   password: string;
-   @IsString({ message: i18nValidationMessage('validation.isString') })
+  @IsString({ message: i18nValidationMessage('validation.isString') })
   @IsNotEmpty({ message: i18nValidationMessage('validation.required') })
   @ApiProperty({
     description: 'User role',

@@ -21,5 +21,4 @@ export const trainsRelations = relations(trains, ({ many }) => ({
   trips: many(trips),
 
   translations: many(trainTranslations),
-
 }));

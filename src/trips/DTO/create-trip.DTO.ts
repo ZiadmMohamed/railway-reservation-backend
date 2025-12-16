@@ -9,11 +9,11 @@ export class CreateTripDTO {
   @IsString()
   @ApiProperty({ example: 'P123456' })
   destinationFrom: string;
-      @IsString()
-      @ApiProperty({ example: 'P123456' })
+  @IsString()
+  @ApiProperty({ example: 'P123456' })
   destinationTo: string;
-      @IsDate()
-      @ApiProperty({ example: '9:00' })
-      @Type(() => Date)
+  @IsDate()
+  @ApiProperty({ example: '9:00' })
+  @Type(() => Date)
   departureDate: Date;
 }

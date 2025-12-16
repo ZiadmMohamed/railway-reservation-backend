@@ -10,7 +10,7 @@ import { NodeMailerModule } from './email/email.module';
 @Module({
   imports: [
     NodeMailerModule,
-    
+
     ConfigModule,
     BetterAuthModule.forRootAsync({
       inject: ['DATABASE', ConfigService],

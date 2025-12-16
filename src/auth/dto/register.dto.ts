@@ -29,5 +29,4 @@ export class RegisterDto {
     minLength: 6,
   })
   password: string;
-
 }

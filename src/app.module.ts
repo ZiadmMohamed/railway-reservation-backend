@@ -68,8 +68,7 @@ import { TrainsModule } from './trains/trains.module';
     TripsModule,
     TripStopsModule,
     TicketsModule,
-    TrainsModule
-
+    TrainsModule,
   ],
 
   controllers: [AppController],

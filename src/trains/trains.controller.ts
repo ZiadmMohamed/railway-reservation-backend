@@ -11,7 +11,14 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CreateTrainDto } from './dto/create-train.dto';
 import { UpdateTrainDto } from './dto/update-train.dto';
 import { TrainResponseDto } from './dto/train-response.dto';
@@ -29,19 +36,18 @@ export class TrainsController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Roles(["admin"])
-@AllowAnonymous()
+  @Roles(['admin'])
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Create a new train' })
   @ApiResponse({
     status: 201,
     description: 'Train created successfully',
-    
   })
   async create(@Body() createTrainDto: CreateTrainDto) {
     const train = await this.trainsService.create(createTrainDto);
 
     return {
-      message:"train created successfully",
+      message: 'train created successfully',
       data: train,
     };
   }

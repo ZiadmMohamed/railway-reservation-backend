@@ -4,8 +4,8 @@ import { StationService } from './stations.service';
 import { stationRepo } from './repository/station.repo';
 
 @Module({
-  controllers:[StationController],
-  providers: [StationService,stationRepo],
+  controllers: [StationController],
+  providers: [StationService, stationRepo],
 
   exports: [],
 })
