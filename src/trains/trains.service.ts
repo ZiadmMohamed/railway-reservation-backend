@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TrainsRepository } from './repositories/trains.repository';
 import { CreateTrainDto } from './dto/create-train.dto';
-import { UpdateTrainDto } from './dto/update-train.dto';
-import { I18nContext } from 'nestjs-i18n';
+// import { UpdateTrainDto } from './dto/update-train.dto';
+// import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class TrainsService {

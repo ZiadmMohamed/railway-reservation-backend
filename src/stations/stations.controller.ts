@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { StationService } from './stations.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AllowAnonymous, AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
-import { anonymous } from 'better-auth/plugins';
+import { AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
 
 @Injectable()
 @ApiTags('stations')

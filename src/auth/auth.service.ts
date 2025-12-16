@@ -6,7 +6,6 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDTO } from './dto/login.DTO';
 import { I18nContext } from 'nestjs-i18n';
-import { createRoleDTO } from './DTO/create.role.DTO';
 
 @Injectable()
 export class AuthService {

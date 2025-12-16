@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiQuery,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateTrainDto } from './dto/create-train.dto';
-import { UpdateTrainDto } from './dto/update-train.dto';
-import { TrainResponseDto } from './dto/train-response.dto';
-import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
-import { AllowAnonymous, AuthGuard, AuthModule, Roles } from '@thallesp/nestjs-better-auth';
-import { I18n, I18nContext } from 'nestjs-i18n';
+// import { UpdateTrainDto } from './dto/update-train.dto';
+// import { TrainResponseDto } from './dto/train-response.dto';
+// import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
+import { AllowAnonymous, AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
+// import { I18n, I18nContext } from 'nestjs-i18n';
 import { TrainsService } from './trains.service';
 
 @ApiTags('Trains')
