@@ -1,104 +1,109 @@
 # Railway Reservation Backend
 
-A modern railway reservation system backend built with NestJS, featuring Redis caching, rate limiting, Prometheus metrics, and comprehensive logging.
+Railway reservation backend built with NestJS, PostgreSQL, Drizzle ORM, and Better Auth. It includes i18n-aware validation, global rate limiting, and structured Winston logging.
 
-## Features
+## What’s in this repo
 
-- 🚂 **Railway Reservation System** - Manage trains, schedules, stations, and bookings
-- 🔒 **Rate Limiting** - Built-in throttling with 10 requests per 60 seconds
-- 📊 **Monitoring** - Prometheus metrics endpoint at `/metrics`
-- 📝 **Logging** - Winston logger with daily rotating file transport (HTTP & error logs)
-- 💾 **Redis Caching** - High-performance caching layer
-- 📚 **API Documentation** - Swagger/OpenAPI documentation
-- 🐳 **Docker Ready** - Multi-stage Dockerfile with development and production targets
-- ✅ **CI/CD** - GitHub Actions workflow with linting, testing, and build validation
+- **Framework**: NestJS 11 (TypeScript)
+- **Database**: PostgreSQL + Drizzle ORM (`drizzle-orm`, `drizzle-kit`)
+- **Auth**: Better Auth (`better-auth`, `@thallesp/nestjs-better-auth`) with email OTP + OpenAPI plugin
+- **Validation/i18n**: `nestjs-i18n` + `class-validator` (localized validation errors)
+- **Rate limiting**: `@nestjs/throttler` (10 requests / 60s globally)
+- **Logging**: Winston + daily rotated log files (`logs/`)
+- **Docs**: Swagger UI at `/api-docs`
+- **Docker**: dev + prod Compose files, multi-stage Dockerfile
 
-## Tech Stack
+## API base paths
 
-- **Framework**: NestJS 11
-- **Language**: TypeScript
-- **Cache**: Redis 7
-- **Testing**: Jest
-- **API Docs**: Swagger/OpenAPI
-- **Monitoring**: Prometheus
-- **Logging**: Winston
+- **API prefix**: `/v1/api` (global prefix)
+- **Health**: `GET /health` (excluded from the prefix)
+- **Swagger UI**: `/api-docs`
+
+## Implemented controllers (current)
+
+All routes below are under `/v1/api` unless stated otherwise:
+
+- **App**
+  - `GET /v1/api/` (welcome)
+  - `GET /health` (health check)
+- **Onboarding**
+  - `GET /v1/api/onboarding/languages`
+- **Passengers**
+  - `POST /v1/api/passengers`
+  - `GET /v1/api/passengers` (pagination via `page`, `limit`)
+  - `PATCH /v1/api/passengers/:id`
+  - `DELETE /v1/api/passengers/:id`
+- **Auth**
+  - Auth routes are served by Better Auth under `basePath=/v1/api/auth`.
+  - `src/auth/auth.controller.ts` exists mainly for Swagger documentation (handlers are intentionally empty).
+  - Better Auth OpenAPI reference: `http://localhost:3000/v1/api/auth/reference`
 
 ## Prerequisites
 
 - Node.js 20+
-- npm or yarn
-- Redis (or use Docker Compose)
+- npm
+- PostgreSQL 16+ (or use Docker Compose)
 
-## Getting Started
+## Setup (local)
 
-### 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd railway-reservation-backend
-```
-
-### 2. Install dependencies
+1) Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+2) Create `.env`
 
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-Required environment variables:
+Create a `.env` file in the project root with (at minimum) the following:
 
 ```env
 NODE_ENV=development
 PORT=3000
-REDIS_URL=redis://localhost:6379
-LOG_LEVEL=info  # optional, defaults to 'info'
+LOG_LEVEL=info
+
+# Local (when running Postgres on your machine):
+DATABASE_URL=postgresql://railway:railway@localhost:5432/railway
+
+# Better Auth (required)
+BETTER_AUTH_SECRET=change-me
+BETTER_AUTH_URL=http://localhost:3000
+
+# Email (SMTP) - required for email OTP/verification
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=user
+SMTP_PASSWORD=pass
+EMAIL_FROM=noreply@example.com
+EMAIL_FROM_NAME=Railway Reservation
 ```
 
-### 4. Start Redis
-
-Using Docker:
+3) Start PostgreSQL (recommended via Docker)
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d postgres
 ```
 
-Or install Redis locally and start it.
+4) Run migrations (Drizzle)
 
-### 5. Run the application
+```bash
+npm run db:migrate
+```
 
-Development mode with hot reload:
+5) Start the API
 
 ```bash
 npm run start:dev
 ```
 
-Production mode:
+## Setup (Docker)
+
+### Development (hot reload)
 
 ```bash
-npm run build
-npm run start:prod
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-The API will be available at:
-- **API**: http://localhost:3000
-- **Swagger Docs**: http://localhost:3000/api-docs
-- **Health Check**: http://localhost:3000/api/health
-- **Metrics**: http://localhost:3000/metrics
-
-## Docker Deployment
-
-### Development
-
-```bash
-docker compose -f docker-compose.dev.yml up
-```
+Optional: Drizzle Studio is exposed at `http://localhost:4983`.
 
 ### Production
 
@@ -106,127 +111,56 @@ docker compose -f docker-compose.dev.yml up
 docker compose up --build
 ```
 
-This will start:
-- Application container on port 3000
-- Redis container on port 6379
+## Environment variables
 
-## Scripts
+Common variables:
+
+| Variable | Description | Example |
+|---|---|---|
+| `NODE_ENV` | `development` / `production` / `test` | `development` |
+| `PORT` | API port | `3000` |
+| `LOG_LEVEL` | Winston level | `info` |
+| `DATABASE_URL` | Postgres connection string | `postgresql://railway:railway@localhost:5432/railway` |
+| `BETTER_AUTH_SECRET` | Better Auth secret | `change-me` |
+| `BETTER_AUTH_URL` | Public base URL used by Better Auth | `http://localhost:3000` |
+| `SMTP_HOST` | SMTP host for OTP emails | `smtp.example.com` |
+| `SMTP_PORT` | SMTP port | `587` |
+| `SMTP_USER` | SMTP username | `user` |
+| `SMTP_PASSWORD` | SMTP password | `pass` |
+| `EMAIL_FROM` | From email | `noreply@example.com` |
+| `EMAIL_FROM_NAME` | From name | `Railway Reservation` |
+
+## Useful scripts
 
 ```bash
-# Development
-npm run start:dev          # Start with watch mode
-npm run start:debug        # Start with debug mode
+# Dev / build
+npm run start:dev
+npm run build
+npm run start:prod
 
-# Build
-npm run build              # Build for production
+# Tests
+npm run test
+npm run test:cov
+npm run test:e2e
 
-# Production
-npm run start:prod         # Run production build
+# Lint/format
+npm run lint
+npm run format
 
-# Testing
-npm run test               # Run unit tests
-npm run test:watch         # Run tests in watch mode
-npm run test:cov           # Run tests with coverage
-npm run test:e2e           # Run end-to-end tests
+# Database (Drizzle)
+npm run db:generate --name=init
+npm run db:migrate
+npm run db:studio
 
-# Code Quality
-npm run lint               # Lint and fix files
-npm run format             # Format code with Prettier
-
-# CI Scripts
-npm run ci:lint            # Lint without fixing (for CI)
-npm run ci:format          # Check formatting (for CI)
-npm run ci:docker          # Start Docker services for CI
-npm run ci:test            # Run tests in CI mode
+# Better Auth
+npm run auth:generate
 ```
-
-## Project Structure
-
-```
-src/
-├── common/                 # Shared utilities, DTOs, decorators
-│   ├── constants.ts       # App-wide constants
-│   ├── docs/              # Swagger documentation helpers
-│   └── dtos/              # Shared DTOs (pagination, etc.)
-├── config/                # Configuration modules
-│   └── logger/            # Winston logger configuration
-├── app.module.ts          # Root application module
-├── app.controller.ts      # Root controller with health endpoint
-├── app.service.ts         # Root service
-└── main.ts                # Application entry point
-```
-
-## API Documentation
-
-Once the application is running, visit http://localhost:3000/api-docs to explore the API using Swagger UI.
-
-### Available Endpoints
-
-- `GET /` - Welcome message
-- `GET /api/health` - Health check endpoint (returns status and timestamp)
-- `GET /metrics` - Prometheus metrics
-
-## Environment Variables
-
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `NODE_ENV` | Environment (development/production/test) | development | No |
-| `PORT` | Application port | 3000 | No |
-| `REDIS_URL` | Redis connection URL | redis://localhost:6379 | Yes |
-| `LOG_LEVEL` | Winston log level (error/warn/info/debug) | info | No |
 
 ## Logging
 
-Logs are written to:
-- Console (formatted with colors in development)
-- `logs/http-YYYY-MM-DD.log` - HTTP request logs
-- `logs/error-YYYY-MM-DD.log` - Error logs
+Log files are written to `logs/` (daily rotated). Docker Compose mounts `./logs` into the container.
 
-Logs are rotated daily and compressed, with 14 days retention and 20MB max file size.
+## Notes
 
-## Health Checks
-
-The application includes a health check endpoint at `/api/health` that returns:
-
-```json
-{
-  "status": "ok",
-  "timestamp": "2024-12-01T00:00:00.000Z"
-}
-```
-
-This is used by Docker healthcheck and can be used by load balancers.
-
-## Rate Limiting
-
-Global rate limiting is enabled:
-- **Window**: 60 seconds
-- **Max requests**: 10 per window
-
-Requests exceeding the limit will receive a 429 (Too Many Requests) response.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## CI/CD
-
-The project includes a GitHub Actions workflow that:
-1. Installs dependencies
-2. Runs ESLint
-3. Checks code formatting with Prettier
-4. Starts required Docker services (Redis)
-5. Builds the application
-6. Runs all tests
-
-## License
-
-This project is [UNLICENSED](LICENSE).
-
-## Support
-
-For questions and support, please open an issue in the repository.
+- Several modules exist as scaffolding (e.g. `stations`, `trips`, `tickets`, etc.) but currently have no controllers wired up.
+- The API uses i18n resolvers: `Accept-Language` and `x-custom-lang`.

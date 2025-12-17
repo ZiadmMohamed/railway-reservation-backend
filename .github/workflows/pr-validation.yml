@@ -12,8 +12,8 @@ jobs:
       - name: Validate branch name
         uses: deepakputhraya/action-branch-name@v1.0.0
         with:
-          regex: '^(bugfix|hotfix|release|feature)\/[A-Z]+-[0-9]+-[A-Za-z0-9-]+$'
-          allowed_prefixes: 'bugfix,hotfix,release,feature'
+          regex: '^(bugfix|hotfix|release|feature|refactor)\/[A-Z]+-[0-9]+-[A-Za-z0-9-]+$'
+          allowed_prefixes: 'bugfix,hotfix,release,feature,refactor'
           ignore: 'main'
 
   pr-title-validation:

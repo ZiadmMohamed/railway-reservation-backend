@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { NodeMailerService } from './email/email.service';
 import { NodeMailerModule } from './email/email.module';
 
@@ -13,7 +12,8 @@ import { NodeMailerModule } from './email/email.module';
 
     ConfigModule,
     BetterAuthModule.forRootAsync({
-      inject: ['DATABASE', ConfigService],
+      imports: [NodeMailerModule, ConfigModule],
+      inject: ['DATABASE', ConfigService, NodeMailerService],
       useFactory: (db: any, configService: ConfigService, emailService: NodeMailerService) => {
         return {
           auth: createAuth(db, configService, emailService),
@@ -23,7 +23,7 @@ import { NodeMailerModule } from './email/email.module';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService],
+  providers: [NodeMailerService],
+  exports: [],
 })
 export class AuthModule {}
