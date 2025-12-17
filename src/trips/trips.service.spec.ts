@@ -102,9 +102,7 @@ describe('TripsService', () => {
     it('should throw NotFoundException if trip does not exist', async () => {
       mockTripsRepo.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('999')).rejects.toThrow(
-        new NotFoundException('trip not found'),
-      );
+      await expect(service.findOne('999')).rejects.toThrow(new NotFoundException('trip not found'));
     });
   });
 

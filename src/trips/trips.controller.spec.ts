@@ -15,7 +15,7 @@ describe('TripsController', () => {
 
   // إنشاء محاكاة (Mock) للخدمة
   const mockTripsService = {
-    CreateTrip: jest.fn((dto) => {
+    CreateTrip: jest.fn(dto => {
       return {
         id: 'uuid-123',
         ...dto,
