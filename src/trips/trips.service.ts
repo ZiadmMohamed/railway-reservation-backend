@@ -6,7 +6,6 @@ import { TripsRepository } from './repositories/trips.repository';
 export class TripsService {
   constructor(private readonly tripsRepository: TripsRepository) {}
 
-
   async getAllTrips(page = 1, limit = 10) {
     const data = await this.tripsRepository.findAll(page, limit);
     const total = await this.tripsRepository.count();
@@ -21,7 +20,6 @@ export class TripsService {
     };
   }
 
-
   async getTripById(id: string) {
     const trip = await this.tripsRepository.findOne(id);
 
@@ -31,7 +29,6 @@ export class TripsService {
 
     return trip;
   }
-
 
   async deleteTripById(id: string) {
     const trip = await this.tripsRepository.findOne(id);

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-
 export class TripDto {
   @ApiProperty({ example: 'uuid' })
   id: string;
@@ -38,7 +37,6 @@ export class TripDto {
   }
 }
 
-
 export class SingleTripResponseDto {
   @ApiProperty({ example: 'Trip details' })
   message: string;
@@ -46,7 +44,6 @@ export class SingleTripResponseDto {
   @ApiProperty({ type: TripDto, required: false })
   data?: TripDto;
 }
-
 
 export class TripListResponseDto {
   @ApiProperty({ example: 'Trips list' })

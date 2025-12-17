@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Delete,
-  Param,
-  Query,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Delete, Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TripsService } from './trips.service';
 import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
@@ -18,15 +10,9 @@ import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
-
   @Get()
-  async findAll(
-    @Query() query: PaginationQueryParams,
-  ): Promise<TripListResponseDto> {
-    const result = await this.tripsService.getAllTrips(
-      query.page,
-      query.limit,
-    );
+  async findAll(@Query() query: PaginationQueryParams): Promise<TripListResponseDto> {
+    const result = await this.tripsService.getAllTrips(query.page, query.limit);
 
     return {
       message: 'Trips list',
@@ -35,12 +21,8 @@ export class TripsController {
     };
   }
 
-
-
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-  ): Promise<SingleTripResponseDto> {
+  async findOne(@Param('id') id: string): Promise<SingleTripResponseDto> {
     const trip = await this.tripsService.getTripById(id);
 
     return {
@@ -49,12 +31,9 @@ export class TripsController {
     };
   }
 
-
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(
-    @Param('id') id: string,
-  ): Promise<SingleTripResponseDto> {
+  async remove(@Param('id') id: string): Promise<SingleTripResponseDto> {
     await this.tripsService.deleteTripById(id);
 
     return {
