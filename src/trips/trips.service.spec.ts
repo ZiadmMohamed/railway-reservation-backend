@@ -8,8 +8,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 describe('TripsService', () => {
   let service: TripsService;
   let tripsRepo: TripsRepo;
-  let trainsRepo: TrainsRepository;
-  let stationsRepo: stationRepo;
+
 
   // إعداد الـ Mocks
   const mockTripsRepo = {
@@ -38,8 +37,7 @@ describe('TripsService', () => {
 
     service = module.get<TripsService>(TripsService);
     tripsRepo = module.get<TripsRepo>(TripsRepo);
-    trainsRepo = module.get<TrainsRepository>(TrainsRepository);
-    stationsRepo = module.get<stationRepo>(stationRepo);
+ 
   });
 
   afterEach(() => {

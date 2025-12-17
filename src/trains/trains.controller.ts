@@ -4,7 +4,7 @@ import { CreateTrainDto } from './dto/create-train.dto';
 // import { UpdateTrainDto } from './dto/update-train.dto';
 // import { TrainResponseDto } from './dto/train-response.dto';
 // import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
-import { AllowAnonymous, AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
+import { AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
 // import { I18n, I18nContext } from 'nestjs-i18n';
 import { TrainsService } from './trains.service';
 
