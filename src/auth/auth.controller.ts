@@ -1,51 +1,33 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
+import { ApiTags } from '@nestjs/swagger';
 import { RegisterDto } from './dto/register.dto';
-import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { AllowAnonymous } from './decorators/public.decorator';
-import { LoginDTO } from './dto/login.DTO';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { LoginDTO } from './dto/login.dto';
+import { EmailVerificationDto } from './dto/email-verification.dto';
 
+// NOTE:
+// This controller is only for Swagger documentation.
+// Authentication is fully handled by Better Auth.
+
+@AllowAnonymous()
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor() {}
 
-  @AllowAnonymous()
-  @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({
-    status: 201,
-    description: 'User registered successfully. OTP sent to email.',
-  })
-  @ApiResponse({ status: 400, description: 'Invalid input or user already exists' })
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
-  }
+  @Post('sign-up/email')
+  async signup(@Body() _registerDto: RegisterDto) {}
 
-  @AllowAnonymous()
-  @Post('verify-otp')
-  @ApiOperation({ summary: 'Verify OTP code' })
-  @ApiResponse({
-    status: 200,
-    description: 'OTP verified successfully. Email verified.',
-  })
-  @ApiResponse({ status: 400, description: 'Invalid or expired OTP' })
-  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-    return this.authService.verifyOtp(verifyOtpDto);
-  }
+  @Post('sign-in/email')
+  async signin(@Body() _loginDto: LoginDTO) {}
 
-  @AllowAnonymous()
-  @Post('login')
-  @ApiOperation({ summary: 'login  user' })
-  @ApiResponse({
-    status: 201,
-    description: 'User login successfully.',
-  })
-  @ApiResponse({ status: 400, description: 'user is not found plz sign up' })
-  async login(@Body() body: LoginDTO, @I18n() i18n: I18nContext) {
-    const user = await this.authService.login(body);
-    return { success: true, data: user, message: i18n.t('auth.login') };
-  }
+  @Post('/email-otp/send-verification-otp')
+  async sendVerificationOTP(@Body() _emailVerificationDto: EmailVerificationDto) {}
+
+  @Post('/email-otp/verify-email')
+  async verifyEmail(@Body() _emailVerificationDto: VerifyOtpDto) {}
+
+  @Post('sign-out')
+  async logout() {}
 }
