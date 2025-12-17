@@ -1,6 +1,6 @@
 import { pgTable, text } from 'drizzle-orm/pg-core';
 import { train } from './train.schema';
-import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
+import { supportedLanguages } from '../../onboarding/Schemas/supported-languages.schema';
 
 export const trainTranslations = pgTable('train_translations', {
   id: text('id').primaryKey(),
