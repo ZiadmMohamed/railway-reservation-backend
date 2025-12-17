@@ -103,7 +103,8 @@
       "node_modules/(?!(better-auth|@thallesp/nestjs-better-auth|better-call)/)"
     ],
     "moduleNameMapper": {
-      "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/auth/decorators/__mocks__/better-auth.mock.ts"
+      "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/auth/decorators/__mocks__/better-auth.mock.ts",
+      "^src/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

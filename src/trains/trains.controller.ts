@@ -9,7 +9,6 @@ import { AllowAnonymous, AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
 import { TrainsService } from './trains.service';
 
 @ApiTags('Trains')
-@AllowAnonymous()
 @Controller('trains')
 export class TrainsController {
   constructor(private readonly trainsService: TrainsService) {}
@@ -18,7 +17,6 @@ export class TrainsController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Roles(['admin'])
-  @AllowAnonymous()
   @ApiOperation({ summary: 'Create a new train' })
   @ApiResponse({
     status: 201,

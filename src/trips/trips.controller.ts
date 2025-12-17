@@ -20,9 +20,9 @@ export class TripsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth()
-  // @AllowAnonymous()
-  @Roles(['admin'])
-  @UseGuards(AuthGuard) // التأكد من تسجيل دخول المستخدم أولاً
+    @UseGuards(AuthGuard) // التأكد من تسجيل دخول المستخدم أولاً
+
+  @Roles(['admin',"user"])
   @ApiOperation({ summary: 'Create a new trip' })
   @ApiResponse({
     status: 201,
@@ -39,7 +39,7 @@ export class TripsController {
     status: 201,
     description: 'trip updated successfully',
   })
-  @Roles(['admin'])
+  @Roles(['admin',"user"])
   @UseGuards(AuthGuard)
   @AllowAnonymous()
   async update(@Param('id') id: string, @Body() body: UpdateTripDto) {
