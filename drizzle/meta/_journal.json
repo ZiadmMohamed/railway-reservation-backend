@@ -5,8 +5,13 @@
     {
       "idx": 0,
       "version": "7",
+<<<<<<< HEAD
       "when": 1765188620868,
       "tag": "0000_daily_sersi",
+=======
+      "when": 1765643832853,
+      "tag": "0000_database_setup.sql",
+>>>>>>> origin/main
       "breakpoints": true
     }
   ]

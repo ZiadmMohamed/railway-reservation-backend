@@ -92,8 +92,17 @@ Object.keys(discoveredSchemas).forEach(key => {
 export * from '../../auth/schemas/auth.schema';
 export * from '../../trains/schemas/train.schema';
 export * from '../../trains/schemas/train-translations.schema';
+
 export * from '../../onboarding/Schemas/onboarding.schema';
 export * from '../../onboarding/Schemas/supported-languages.schema';
+
+export * from '../../passenger/schemas/passenger.schema';
+export * from '../../stations/schemas/stations.schema';
+export * from '../../seats/schemas/seats.schema';
+export * from '../../trips/schemas/trips.schema';
+export * from '../../trip-stops/schemas/trip-stops.schema';
+export * from '../../tickets/schemas/tickets.schema';
+
 
 // Note: When you create a new schema file (e.g., src/users/schemas/user.schema.ts),
 // it will be automatically discovered and included. You can optionally add an explicit
