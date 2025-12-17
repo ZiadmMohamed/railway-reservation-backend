@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
+  "id": "f62b5d91-c09e-4349-95b8-fb2df00c8114",
+=======
   "id": "df4b739d-19d0-4a9d-bb60-a65bbb3d71b8",
+>>>>>>> origin/main
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -359,12 +363,37 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
+    "public.train": {
+      "name": "train",
+=======
     "public.trains": {
       "name": "trains",
+>>>>>>> origin/main
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
+<<<<<<< HEAD
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "number": {
+          "name": "number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_seats": {
+          "name": "total_seats",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "available_seats": {
+          "name": "available_seats",
+=======
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
@@ -372,6 +401,7 @@
         },
         "train_number": {
           "name": "train_number",
+>>>>>>> origin/main
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -395,11 +425,19 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+<<<<<<< HEAD
+        "train_number_unique": {
+          "name": "train_number_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "number"
+=======
         "trains_train_number_unique": {
           "name": "trains_train_number_unique",
           "nullsNotDistinct": false,
           "columns": [
             "train_number"
+>>>>>>> origin/main
           ]
         }
       },
@@ -413,10 +451,16 @@
       "columns": {
         "id": {
           "name": "id",
+<<<<<<< HEAD
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+=======
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
+>>>>>>> origin/main
         },
         "name": {
           "name": "name",
@@ -438,7 +482,11 @@
         },
         "train_id": {
           "name": "train_id",
+<<<<<<< HEAD
+          "type": "text",
+=======
           "type": "uuid",
+>>>>>>> origin/main
           "primaryKey": false,
           "notNull": true
         },
@@ -451,10 +499,17 @@
       },
       "indexes": {},
       "foreignKeys": {
+<<<<<<< HEAD
+        "train_translations_train_id_train_id_fk": {
+          "name": "train_translations_train_id_train_id_fk",
+          "tableFrom": "train_translations",
+          "tableTo": "train",
+=======
         "train_translations_train_id_trains_id_fk": {
           "name": "train_translations_train_id_trains_id_fk",
           "tableFrom": "train_translations",
           "tableTo": "trains",
+>>>>>>> origin/main
           "columnsFrom": [
             "train_id"
           ],
@@ -484,12 +539,41 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
+    "public.onboarding_screens": {
+      "name": "onboarding_screens",
+=======
     "public.passengers": {
       "name": "passengers",
+>>>>>>> origin/main
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
+<<<<<<< HEAD
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_index": {
+          "name": "order_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+=======
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
@@ -594,6 +678,7 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+>>>>>>> origin/main
         }
       },
       "indexes": {},
@@ -604,12 +689,70 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
+    "public.onboarding_translations": {
+      "name": "onboarding_translations",
+=======
     "public.seats": {
       "name": "seats",
+>>>>>>> origin/main
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
+<<<<<<< HEAD
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "screen_id": {
+          "name": "screen_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "language_id": {
+          "name": "language_id",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subtitle": {
+          "name": "subtitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "primary_label": {
+          "name": "primary_label",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "primary_action": {
+          "name": "primary_action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "secondary_label": {
+          "name": "secondary_label",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "secondary_action": {
+          "name": "secondary_action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+=======
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
@@ -653,10 +796,19 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+>>>>>>> origin/main
         }
       },
       "indexes": {},
       "foreignKeys": {
+<<<<<<< HEAD
+        "onboarding_translations_screen_id_onboarding_screens_id_fk": {
+          "name": "onboarding_translations_screen_id_onboarding_screens_id_fk",
+          "tableFrom": "onboarding_translations",
+          "tableTo": "onboarding_screens",
+          "columnsFrom": [
+            "screen_id"
+=======
         "seats_train_id_trains_id_fk": {
           "name": "seats_train_id_trains_id_fk",
           "tableFrom": "seats",
@@ -745,6 +897,7 @@
           "tableTo": "trains",
           "columnsFrom": [
             "train_id"
+>>>>>>> origin/main
           ],
           "columnsTo": [
             "id"
@@ -752,6 +905,14 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
+<<<<<<< HEAD
+        "onboarding_translations_language_id_supported_languages_id_fk": {
+          "name": "onboarding_translations_language_id_supported_languages_id_fk",
+          "tableFrom": "onboarding_translations",
+          "tableTo": "supported_languages",
+          "columnsFrom": [
+            "language_id"
+=======
         "trips_destination_from_stations_id_fk": {
           "name": "trips_destination_from_stations_id_fk",
           "tableFrom": "trips",
@@ -771,6 +932,7 @@
           "tableTo": "stations",
           "columnsFrom": [
             "destination_to"
+>>>>>>> origin/main
           ],
           "columnsTo": [
             "id"
@@ -785,6 +947,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
+=======
     "public.trip_stops": {
       "name": "trip_stops",
       "schema": "",
@@ -994,6 +1158,7 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+>>>>>>> origin/main
     "public.supported_languages": {
       "name": "supported_languages",
       "schema": "",
@@ -1059,6 +1224,8 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+<<<<<<< HEAD
+=======
     }
   },
   "enums": {
@@ -1079,6 +1246,7 @@
         "Cancelled",
         "Pending"
       ]
+>>>>>>> origin/main
     }
   },
   "schemas": {},

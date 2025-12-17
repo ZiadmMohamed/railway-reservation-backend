@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { eq, inArray, and } from 'drizzle-orm';
 import { trains } from '../schemas/train.schema';
 import { trainTranslations } from '../schemas/train-translations.schema';
-import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
+
+import { supportedLanguages } from '../../onboarding/Schemas/supported-languages.schema';
+import { randomUUID } from 'crypto';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
 

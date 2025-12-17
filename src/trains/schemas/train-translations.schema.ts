@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+import { pgTable, text } from 'drizzle-orm/pg-core';
+import { train } from './train.schema';
+import { supportedLanguages } from '../../onboarding/Schemas/supported-languages.schema';
+=======
 import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 import { trains } from './train.schema';
 import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
+>>>>>>> origin/main
 
 export const trainTranslations = pgTable('train_translations', {
   id: uuid('id')
