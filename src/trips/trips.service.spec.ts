@@ -9,7 +9,6 @@ describe('TripsService', () => {
   let service: TripsService;
   let tripsRepo: TripsRepo;
 
-
   // إعداد الـ Mocks
   const mockTripsRepo = {
     create: jest.fn(),
@@ -37,7 +36,6 @@ describe('TripsService', () => {
 
     service = module.get<TripsService>(TripsService);
     tripsRepo = module.get<TripsRepo>(TripsRepo);
- 
   });
 
   afterEach(() => {
