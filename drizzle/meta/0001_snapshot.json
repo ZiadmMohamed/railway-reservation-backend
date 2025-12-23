@@ -1,6 +1,6 @@
 {
-  "id": "079a2a37-58f2-4369-9357-386cba4c2d41",
-  "prevId": "ed663cd2-0656-46da-ab67-18c221559109",
+  "id": "2b110cde-6a4b-4a28-931c-52c8d0fdb89f",
+  "prevId": "079a2a37-58f2-4369-9357-386cba4c2d41",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -262,6 +262,12 @@
           "notNull": true,
           "default": false
         },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "email_verified": {
           "name": "email_verified",
           "type": "boolean",
@@ -299,6 +305,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "email"
+          ]
+        },
+        "user_stripe_customer_id_unique": {
+          "name": "user_stripe_customer_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "stripe_customer_id"
           ]
         }
       },

@@ -8,6 +8,13 @@
       "when": 1765643832853,
       "tag": "0000_database_setup.sql",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766427892798,
+      "tag": "0001_$npm_config_name",
+      "breakpoints": true
     }
   ]
 }

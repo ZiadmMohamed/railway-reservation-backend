@@ -12,6 +12,7 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   role: text('role').default('user'),
   banned: boolean('banned').default(false).notNull(),
+  stripeCustomerId: text('stripe_customer_id').unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
