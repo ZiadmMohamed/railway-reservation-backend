@@ -17,47 +17,16 @@ export class TrainsRepository {
    * @param locale - The locale for the translation
    * @returns The created train with translation
    */
-  async create(
-    data: {
-      trainNumber: string;
-    },
-    translation: { name: string; source: string; destination: string },
-    locale: string,
-  ) {
+  async create(data: { trainNumber: string }) {
     // Get language ID from locale code using a query
-    const [language] = await this.db
-      .select({ id: supportedLanguages.id })
-      .from(supportedLanguages)
-      .where(eq(supportedLanguages.code, locale))
-      .limit(1);
-
-    if (!language) {
-      throw new Error(`Language with code '${locale}' not found`);
-    }
 
     // Create train and translation in a transaction
     const [created] = await this.db.insert(trains).values(data).returning();
 
-    // Create translation
-    await this.db.insert(trainTranslations).values({
-      trainId: created.id,
-      languageId: language.id,
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
-    });
-
     return {
       ...created,
-      translations: {
-        [locale]: translation,
-      },
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
     };
   }
-
   /**
    * Find all trains with translations
    * @param page - The page number

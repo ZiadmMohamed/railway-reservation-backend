@@ -8,7 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-
+import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: false,
@@ -20,6 +20,7 @@ async function bootstrap() {
 
   // Enable dependency injection for custom validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.use("/booking/webhook", express.raw({type:"application/json"}))
 
   // Enable global validation pipe
   app.useGlobalPipes(

@@ -1,3 +1,36 @@
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateTrainDto } from './dto/create-train.dto';
+// import { UpdateTrainDto } from './dto/update-train.dto';
+// import { TrainResponseDto } from './dto/train-response.dto';
+// import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
+import { AuthGuard, Roles } from '@thallesp/nestjs-better-auth';
+// import { I18n, I18nContext } from 'nestjs-i18n';
+import { TrainsService } from './trains.service';
+
+@ApiTags('Trains')
+@Controller('trains')
+export class TrainsController {
+  constructor(private readonly trainsService: TrainsService) {}
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles(['admin'])
+  @ApiOperation({ summary: 'Create a new train' })
+  @ApiResponse({
+    status: 201,
+    description: 'Train created successfully',
+  })
+  async create(@Body() createTrainDto: CreateTrainDto) {
+    const train = await this.trainsService.create(createTrainDto);
+
+    return {
+      message: 'train created successfully',
+      data: train,
+    };
+  }
+}
 // import {
 //   Controller,
 //   Get,

@@ -66,6 +66,12 @@ export class PassengerRepository {
       .where(and(eq(passengers.id, id), eq(passengers.userId, userId)));
     return result ?? null;
   }
+  /**
+   * Find a passenger by id
+   * @param id - The id of the passenger
+   * @param userId - The id of the user
+   * @returns The passenger or null if not found
+   */
 
   /**
    * Update a passenger
