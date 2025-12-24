@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { eq, inArray, and } from 'drizzle-orm';
 import { trains } from '../schemas/train.schema';
 import { trainTranslations } from '../schemas/train-translations.schema';
@@ -17,47 +17,22 @@ export class TrainsRepository {
    * @param locale - The locale for the translation
    * @returns The created train with translation
    */
-  async create(
-    data: {
-      trainNumber: string;
-    },
-    translation: { name: string; source: string; destination: string },
-    locale: string,
-  ) {
-    // Get language ID from locale code using a query
-    const [language] = await this.db
-      .select({ id: supportedLanguages.id })
-      .from(supportedLanguages)
-      .where(eq(supportedLanguages.code, locale))
-      .limit(1);
+  async create(data: { trainNumber: string }) {
+  const existingTrain = await this.db
+    .select()
+    .from(trains)
+    .where(eq(trains.trainNumber, data.trainNumber))
+    .limit(1);
 
-    if (!language) {
-      throw new Error(`Language with code '${locale}' not found`);
-    }
-
-    // Create train and translation in a transaction
+  if (existingTrain.length > 0) {
+    throw new ConflictException(` the train number is already exist ${data.trainNumber} `);
+  }
     const [created] = await this.db.insert(trains).values(data).returning();
-
-    // Create translation
-    await this.db.insert(trainTranslations).values({
-      trainId: created.id,
-      languageId: language.id,
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
-    });
 
     return {
       ...created,
-      translations: {
-        [locale]: translation,
-      },
-      name: translation.name,
-      source: translation.source,
-      destination: translation.destination,
     };
   }
-
   /**
    * Find all trains with translations
    * @param page - The page number
