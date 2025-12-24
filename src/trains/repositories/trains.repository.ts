@@ -18,15 +18,15 @@ export class TrainsRepository {
    * @returns The created train with translation
    */
   async create(data: { trainNumber: string }) {
-  const existingTrain = await this.db
-    .select()
-    .from(trains)
-    .where(eq(trains.trainNumber, data.trainNumber))
-    .limit(1);
+    const existingTrain = await this.db
+      .select()
+      .from(trains)
+      .where(eq(trains.trainNumber, data.trainNumber))
+      .limit(1);
 
-  if (existingTrain.length > 0) {
-    throw new ConflictException(` the train number is already exist ${data.trainNumber} `);
-  }
+    if (existingTrain.length > 0) {
+      throw new ConflictException(` the train number is already exist ${data.trainNumber} `);
+    }
     const [created] = await this.db.insert(trains).values(data).returning();
 
     return {
