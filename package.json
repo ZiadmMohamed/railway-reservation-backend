@@ -36,6 +36,7 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",
+    "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/throttler": "^6.4.0",
@@ -102,7 +103,8 @@
       "node_modules/(?!(better-auth|@thallesp/nestjs-better-auth|better-call)/)"
     ],
     "moduleNameMapper": {
-      "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/auth/decorators/__mocks__/better-auth.mock.ts"
+      "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/auth/decorators/__mocks__/better-auth.mock.ts",
+      "^src/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

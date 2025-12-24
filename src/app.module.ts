@@ -20,6 +20,7 @@ import { TripsModule } from './trips/trips.module';
 import { TripStopsModule } from './trip-stops/trip-stops.module';
 import { TicketsModule } from './tickets/tickets.module';
 import * as path from 'path';
+import { TrainsModule } from './trains/trains.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import * as path from 'path';
     TripsModule,
     TripStopsModule,
     TicketsModule,
+    TrainsModule,
   ],
 
   controllers: [AppController],
