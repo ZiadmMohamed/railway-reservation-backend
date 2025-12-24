@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { eq, inArray, and } from 'drizzle-orm';
 import { trains } from '../schemas/train.schema';
 import { trainTranslations } from '../schemas/train-translations.schema';
@@ -18,9 +18,15 @@ export class TrainsRepository {
    * @returns The created train with translation
    */
   async create(data: { trainNumber: string }) {
-    // Get language ID from locale code using a query
+  const existingTrain = await this.db
+    .select()
+    .from(trains)
+    .where(eq(trains.trainNumber, data.trainNumber))
+    .limit(1);
 
-    // Create train and translation in a transaction
+  if (existingTrain.length > 0) {
+    throw new ConflictException(` the train number is already exist ${data.trainNumber} `);
+  }
     const [created] = await this.db.insert(trains).values(data).returning();
 
     return {
