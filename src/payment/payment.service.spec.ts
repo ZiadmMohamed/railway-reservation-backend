@@ -132,7 +132,7 @@ describe('PaymentService', () => {
         type: 'checkout.session.completed',
         data: { object: { metadata: { orderId: '123' } } },
       };
-      
+
       stripeMock.webhooks.constructEvent.mockReturnValue(mockEvent);
 
       const result = await service.webhook(mockReq);

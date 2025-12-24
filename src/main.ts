@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // Enable dependency injection for custom validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  app.use("/booking/webhook", express.raw({type:"application/json"}))
+  app.use('/booking/webhook', express.raw({ type: 'application/json' }));
 
   // Enable global validation pipe
   app.useGlobalPipes(
