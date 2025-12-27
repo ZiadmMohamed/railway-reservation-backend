@@ -85,7 +85,6 @@ export const verification = pgTable(
 // 2. جدول البطاقات (لتخزين البيانات غير الحساسة فقط)
 export const userCards = pgTable('user_cards', {
   id: uuid('id').primaryKey().defaultRandom(),
-  // تغيير النوع من uuid إلى text ليطابق user.id
   userId: text('user_id')
     .references(() => user.id, { onDelete: 'cascade' })
     .notNull(),

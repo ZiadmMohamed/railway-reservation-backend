@@ -62,7 +62,6 @@ console.log("user",userRecord);
 
     let stripeId = userRecord.stripeCustomerId;
 
-    // 2. إذا لم يكن لديه Stripe ID، ننشئه ونحدث القاعدة
     if (!stripeId) {
       stripeId = await this.createStripeCustomer(userRecord.email, userRecord.name);
 
@@ -75,7 +74,7 @@ console.log("user",userRecord);
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'setup',
-      customer: stripeId, // 👈 الربط بالعميل الصحيح
+      customer: stripeId, 
       success_url: `${process.env.FRONTEND_URL}/booking-summary?success=true`,
       cancel_url: `${process.env.FRONTEND_URL}/booking-summary?error=true`,
       metadata: { userId },
@@ -84,7 +83,6 @@ console.log("user",userRecord);
   }
 
   async webhook(sig: string, payload: any) {
-    // إذا كان الـ payload عبارة عن Object وليس Buffer، حوله لـ String
     let finalPayload = Buffer.isBuffer(payload) 
         ? payload 
         : JSON.stringify(payload);

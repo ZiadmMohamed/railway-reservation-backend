@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentService } from './payment.service';
-import Stripe from 'stripe';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-// 1. تعريف كائن الـ Mock الذي يحتوي على كل الدوال التي تستدعيها في الخدمة
 const mockStripeInstance = {
   checkout: {
     sessions: {
@@ -30,7 +28,6 @@ const mockStripeInstance = {
   },
 };
 
-// 2. حل مشكلة "Stripe is not a constructor" عبر تعريف الـ Default Export
 jest.mock('stripe', () => {
   return {
     __esModule: true,
@@ -48,16 +45,13 @@ describe('PaymentService', () => {
     }).compile();
 
     service = module.get<PaymentService>(PaymentService);
-    // نصل للكائن الوهمي المحقون داخل الخدمة للتحكم في نتائجه
     stripeMock = (service as any).stripe;
   });
 
-  // ✅ اختبار تعريف الخدمة
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  // ✅ اختبار استخراج بيانات البطاقة الآمنة
   describe('getSafeCardDetails', () => {
     it('should return safe card info when given a valid paymentMethodId', async () => {
       const mockPmResponse = {
@@ -100,7 +94,6 @@ describe('PaymentService', () => {
     });
   });
 
-  // ✅ اختبار إنشاء جلسة الدفع (Checkout Session)
   describe('checkoutsession', () => {
     it('should create a stripe checkout session successfully', async () => {
       const mockSession = { id: 'cs_123', url: 'https://stripe.com/pay' };
@@ -140,7 +133,6 @@ describe('PaymentService', () => {
     });
   });
 
-  // ✅ اختبار استرجاع Payment Intent
   describe('retrivePaymentIntent', () => {
     it('should retrieve payment intent details', async () => {
       const mockIntent = { id: 'pi_123', amount: 1000 };
