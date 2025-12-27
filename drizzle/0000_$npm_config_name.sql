@@ -1,3 +1,5 @@
+CREATE TYPE "public"."seat_class" AS ENUM('First', 'Economy', 'Business');--> statement-breakpoint
+CREATE TYPE "public"."ticket_status" AS ENUM('Booked', 'Cancelled', 'Pending');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -30,12 +32,28 @@ CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL,
-	"role" text DEFAULT 'user' NOT NULL,
+	"role" text DEFAULT 'user',
+	"banned" boolean DEFAULT false NOT NULL,
+	"stripe_customer_id" text,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "user_email_unique" UNIQUE("email")
+	CONSTRAINT "user_email_unique" UNIQUE("email"),
+	CONSTRAINT "user_stripe_customer_id_unique" UNIQUE("stripe_customer_id")
+);
+--> statement-breakpoint
+CREATE TABLE "user_cards" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" text NOT NULL,
+	"stripe_payment_method_id" text NOT NULL,
+	"brand" varchar(20),
+	"last4" varchar(4) NOT NULL,
+	"exp_month" integer NOT NULL,
+	"exp_year" integer NOT NULL,
+	"funding" varchar(20),
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "user_cards_stripe_payment_method_id_unique" UNIQUE("stripe_payment_method_id")
 );
 --> statement-breakpoint
 CREATE TABLE "verification" (
@@ -139,6 +157,7 @@ CREATE TABLE "supported_languages" (
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_cards" ADD CONSTRAINT "user_cards_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "train_translations" ADD CONSTRAINT "train_translations_train_id_trains_id_fk" FOREIGN KEY ("train_id") REFERENCES "public"."trains"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "train_translations" ADD CONSTRAINT "train_translations_language_id_supported_languages_id_fk" FOREIGN KEY ("language_id") REFERENCES "public"."supported_languages"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "passengers" ADD CONSTRAINT "passengers_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
