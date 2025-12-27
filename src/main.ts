@@ -8,11 +8,26 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+ rawBody: true,
     bodyParser: false,
+
   });
+  app.use(
+    bodyParser.json({
+      verify: (req: any, res, buf) => {
+        if (req.url.includes('/webhook')) {
+          req.rawBody = buf;
+        }
+      },
+    }),
+  );
+  app.use("v1/api/card/webhook", express.raw({type:"application/json"}))
+
+    app.setGlobalPrefix('v1/api', { exclude: ['health'] });
 
   const configService = app.get(ConfigService);
   const loggerInstance = createLogger(createWinstonConfig(configService));
@@ -38,7 +53,6 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('v1/api', { exclude: ['health'] });
 
   const config = new DocumentBuilder()
     .setTitle('Railway API')

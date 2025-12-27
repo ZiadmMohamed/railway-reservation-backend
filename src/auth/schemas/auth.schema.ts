@@ -3,7 +3,16 @@
 // Run: npm run auth:generate
 
 import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  uuid,
+  varchar,
+  integer,
+} from 'drizzle-orm/pg-core';
 import { passengers } from '../../passenger/schemas/passenger.schema';
 
 export const user = pgTable('user', {
@@ -12,6 +21,7 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   role: text('role').default('user'),
   banned: boolean('banned').default(false).notNull(),
+  stripeCustomerId: text('stripe_customer_id').unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -80,10 +90,35 @@ export const verification = pgTable(
   table => [index('verification_identifier_idx').on(table.identifier)],
 );
 
+export const userCards = pgTable('user_cards', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .references(() => user.id, { onDelete: 'cascade' })
+    .notNull(),
+
+  stripePaymentMethodId: text('stripe_payment_method_id').unique().notNull(),
+
+  brand: varchar('brand', { length: 20 }),
+  last4: varchar('last4', { length: 4 }).notNull(),
+  expMonth: integer('exp_month').notNull(),
+  expYear: integer('exp_year').notNull(),
+  funding: varchar('funding', { length: 20 }),
+
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const cardRelations = relations(userCards, ({ one }) => ({
+  user: one(user, {
+    fields: [userCards.userId],
+    references: [user.id],
+  }),
+}));
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   passengers: many(passengers),
+  cards: many(userCards),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
