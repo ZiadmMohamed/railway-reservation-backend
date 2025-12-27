@@ -12,9 +12,8 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
- rawBody: true,
+    rawBody: true,
     bodyParser: false,
-
   });
   app.use(
     bodyParser.json({
@@ -25,9 +24,9 @@ async function bootstrap() {
       },
     }),
   );
-  app.use("v1/api/card/webhook", express.raw({type:"application/json"}))
+  app.use('v1/api/card/webhook', express.raw({ type: 'application/json' }));
 
-    app.setGlobalPrefix('v1/api', { exclude: ['health'] });
+  app.setGlobalPrefix('v1/api', { exclude: ['health'] });
 
   const configService = app.get(ConfigService);
   const loggerInstance = createLogger(createWinstonConfig(configService));
@@ -52,7 +51,6 @@ async function bootstrap() {
       // detailedErrors: true,
     }),
   );
-
 
   const config = new DocumentBuilder()
     .setTitle('Railway API')
