@@ -90,7 +90,6 @@ export const verification = pgTable(
   table => [index('verification_identifier_idx').on(table.identifier)],
 );
 
-// 2. جدول البطاقات (لتخزين البيانات غير الحساسة فقط)
 export const userCards = pgTable('user_cards', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: text('user_id')
