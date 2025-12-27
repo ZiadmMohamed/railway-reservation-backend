@@ -55,9 +55,14 @@ export class PaymentService {
   }
   //   this method to add unsestive data of card to db
   async addCard(userId: string) {
-    const userRecord = await this.db.select().from(user).where(eq(user.id, userId)).limit(1).then(res => res[0]);
-  
-console.log("user",userRecord);
+    const userRecord = await this.db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1)
+      .then(res => res[0]);
+
+    console.log('user', userRecord);
     if (!userRecord) throw new NotFoundException('User not found');
 
     let stripeId = userRecord.stripeCustomerId;
@@ -74,7 +79,7 @@ console.log("user",userRecord);
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'setup',
-      customer: stripeId, 
+      customer: stripeId,
       success_url: `${process.env.FRONTEND_URL}/booking-summary?success=true`,
       cancel_url: `${process.env.FRONTEND_URL}/booking-summary?error=true`,
       metadata: { userId },
@@ -83,23 +88,19 @@ console.log("user",userRecord);
   }
 
   async webhook(sig: string, payload: any) {
-    let finalPayload = Buffer.isBuffer(payload) 
-        ? payload 
-        : JSON.stringify(payload);
-        if (!(payload instanceof Buffer) && typeof payload === 'object') {
-    finalPayload = JSON.stringify(payload);
-  }
+    let finalPayload = Buffer.isBuffer(payload) ? payload : JSON.stringify(payload);
+    if (!(payload instanceof Buffer) && typeof payload === 'object') {
+      finalPayload = JSON.stringify(payload);
+    }
     if (!sig) {
       throw new BadRequestException('Missing Stripe signature header');
     }
     const endpointsecret = process.env.STRIPE_WEBHOOK_SECRET as string;
-console.log("endpointsecret",endpointsecret); 
+    console.log('endpointsecret', endpointsecret);
 
     const event = this.stripe.webhooks.constructEvent(finalPayload, sig, endpointsecret);
-    console.log("event",event);
+    console.log('event', event);
     if (!event) {
-    
-
       throw new NotFoundException('event is not exist');
     }
 
@@ -108,45 +109,45 @@ console.log("endpointsecret",endpointsecret);
       // check if the payment failed
       // await   this.orderRepo.updateOne({_id:event.data.object["metadata"].orderId,status:OrderStatus.pending},{status:OrderStatus.canceled,rejectedReason:"fail to pay"})
 
-      throw new BadRequestException('fail to pay');}
-          //   check the booking
-      //   const order=await this.orderRepo.findOne({_id:event.data.object["metadata"]?.orderId})
-      //   if(!order){
-      //     throw new NotFoundException("order id is not avaialbe")
-      //   }
-      // change status of booking
-      //   await this.confirmPaymenIntent(order.intentId)
-      // await   this.orderRepo.updateOne({_id:event.data.object.metadata?.orderId,status:OrderStatus.pending},{status:OrderStatus.placed,paidAt:Date.now()})
+      throw new BadRequestException('fail to pay');
+    }
+    //   check the booking
+    //   const order=await this.orderRepo.findOne({_id:event.data.object["metadata"]?.orderId})
+    //   if(!order){
+    //     throw new NotFoundException("order id is not avaialbe")
+    //   }
+    // change status of booking
+    //   await this.confirmPaymenIntent(order.intentId)
+    // await   this.orderRepo.updateOne({_id:event.data.object.metadata?.orderId,status:OrderStatus.pending},{status:OrderStatus.placed,paidAt:Date.now()})
 
     const session = event.data.object as Stripe.Checkout.Session;
-      console.log("session",session);
-      console.log("sessionintent",session.setup_intent);
+    console.log('session', session);
+    console.log('sessionintent', session.setup_intent);
 
-    if (session.mode === 'setup' ) {
-      const setupIntent = await this.stripe.setupIntents.retrieve(session.setup_intent as string,{ expand: ['payment_method'] });
-      console.log("setupIntent",setupIntent);
-      const paymentMethodId = setupIntent.payment_method["id"] as string;
+    if (session.mode === 'setup') {
+      const setupIntent = await this.stripe.setupIntents.retrieve(session.setup_intent as string, {
+        expand: ['payment_method'],
+      });
+      console.log('setupIntent', setupIntent);
+      const paymentMethodId = setupIntent.payment_method['id'] as string;
       const cardInfo = await this.getSafeCardDetails(paymentMethodId);
 
       //  save in db
-      console.log("Metadata:", session.metadata)
+      console.log('Metadata:', session.metadata);
       await this.db.insert(userCards).values({
         userId: session.metadata.userId,
         stripePaymentMethodId: paymentMethodId,
-        ...cardInfo
+        ...cardInfo,
       });
-      console.log("paymentMethodId",setupIntent);
+      console.log('paymentMethodId', setupIntent);
 
       console.log(cardInfo);
 
       return 'done';
     }
-    
-          return 'done';
 
+    return 'done';
   }
-
-
 
   async getSafeCardDetails(paymentMethodId: string) {
     let paymentMethod;
