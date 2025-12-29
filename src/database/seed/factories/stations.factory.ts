@@ -84,4 +84,3 @@ export const stationsData = [
     stationArabicName: 'كفر الشيخ',
   },
 ];
-

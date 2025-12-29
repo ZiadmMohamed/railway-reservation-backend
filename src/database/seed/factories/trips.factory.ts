@@ -114,4 +114,3 @@ export const tripsTemplates: TripTemplate[] = [
     daysFromNow: [0, 1, 2],
   },
 ];
-

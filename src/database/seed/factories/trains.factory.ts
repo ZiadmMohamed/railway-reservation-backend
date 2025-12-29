@@ -79,4 +79,3 @@ export const trainsData: TrainConfig[] = [
     coaches: [{ class: 'Economy', count: 8, seatsPerCoach: 60 }],
   },
 ];
-
