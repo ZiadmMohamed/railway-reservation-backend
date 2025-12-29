@@ -21,6 +21,7 @@ import { TripStopsModule } from './trip-stops/trip-stops.module';
 import { TicketsModule } from './tickets/tickets.module';
 import * as path from 'path';
 import { TrainsModule } from './trains/trains.module';
+import { validate } from './env.validation';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TrainsModule } from './trains/trains.module';
       isGlobal: true,
       load: [appConfig, databaseConfig, authConfig, emailConfig],
       envFilePath: ['.env'],
+      validate,
     }),
     DatabaseModule,
     // i18n configuration
