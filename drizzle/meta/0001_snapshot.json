@@ -1,6 +1,6 @@
 {
-  "id": "079a2a37-58f2-4369-9357-386cba4c2d41",
-  "prevId": "ed663cd2-0656-46da-ab67-18c221559109",
+  "id": "4deb8b1b-6926-49b3-b520-d6e4af34fbfd",
+  "prevId": "079a2a37-58f2-4369-9357-386cba4c2d41",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -647,13 +647,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "class": {
-          "name": "class",
-          "type": "seat_class",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1076,15 +1069,6 @@
     }
   },
   "enums": {
-    "public.seat_class": {
-      "name": "seat_class",
-      "schema": "public",
-      "values": [
-        "First",
-        "Economy",
-        "Business"
-      ]
-    },
     "public.ticket_status": {
       "name": "ticket_status",
       "schema": "public",
