@@ -25,13 +25,13 @@ export class TicketsController {
   constructor(private readonly TicketsService: TicketsService) {}
 
   @Post('book')
-  // @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(AuthGuard)
-  // @Roles(['admin', 'user'])
-  @AllowAnonymous()
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
+  @Roles(['admin', 'user'])
+  // @AllowAnonymous()
   async createTickets(
     @Body() bookTicketsDto: BookTicketsDto,
-    // @Session() session: UserSession,
+    @Session() session: UserSession,
   ) {
     // return this.TicketsService.bookTickets(bookTicketsDto, session.user.id);
     return this.TicketsService.bookTickets(bookTicketsDto);
