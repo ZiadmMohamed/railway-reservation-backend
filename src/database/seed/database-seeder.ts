@@ -12,7 +12,7 @@ import {
   tripsTemplates,
   TrainConfig,
   RouteConfig,
-} from './seed-data';
+} from './factories';
 // TODO: refactor
 export class DatabaseSeeder {
   private stationNameToIdMap: Map<string, string> = new Map();
