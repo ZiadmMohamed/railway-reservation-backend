@@ -21,18 +21,17 @@ export class TicketsService {
     private readonly tripsRepo: TripsRepo,
   ) {}
 
-  // async bookTickets(dto: BookTicketsDto, userId: string) {
-  async bookTickets(dto: BookTicketsDto) {
-    // dto.passengers.forEach(async (item) => {
-    //   // 1️⃣ check passenger exists & belongs to user
-    //   const passenger = await this.passengerRepository.findOne(
-    //     item.passengerId,
-    //     userId,
-    //   );
-    //   if (!passenger) {
-    //     throw new NotFoundException('Passenger not found');
-    //   }
-    // });
+  async bookTickets(dto: BookTicketsDto, userId: string) {
+    dto.passengers.forEach(async (item) => {
+      // 1️⃣ check passenger exists & belongs to user
+      const passenger = await this.passengerRepository.findOne(
+        item.passengerId,
+        userId,
+      );
+      if (!passenger) {
+        throw new NotFoundException('Passenger not found');
+      }
+    });
 
     // 2️⃣ Check if trip exists
     const trip = await this.tripsRepo.findOne(dto.tripId);
