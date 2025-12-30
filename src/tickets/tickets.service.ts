@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { BookTicketsDto } from '../tickets/dto/create-booking,dto';
 import { PassengerRepository } from 'src/passenger/repositories/passenger.repository';
 import { DB } from 'src/database/drizzle';
@@ -22,12 +18,9 @@ export class TicketsService {
   ) {}
 
   async bookTickets(dto: BookTicketsDto, userId: string) {
-    dto.passengers.forEach(async (item) => {
+    dto.passengers.forEach(async item => {
       // 1️⃣ check passenger exists & belongs to user
-      const passenger = await this.passengerRepository.findOne(
-        item.passengerId,
-        userId,
-      );
+      const passenger = await this.passengerRepository.findOne(item.passengerId, userId);
       if (!passenger) {
         throw new NotFoundException('Passenger not found');
       }
@@ -40,9 +33,11 @@ export class TicketsService {
     }
     console.log('Trip found:', trip);
 
-
     // ensure tripId and trainId are the correct variables in this scope
-    const availableSeats = await this.ticketsRepository.findAvailableSeats(dto.tripId, trip.trainId);
+    const availableSeats = await this.ticketsRepository.findAvailableSeats(
+      dto.tripId,
+      trip.trainId,
+    );
     console.log('Available seats:', availableSeats);
 
     if (availableSeats.length < dto.passengers.length) {

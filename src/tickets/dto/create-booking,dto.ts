@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { ArrayNotEmpty, IsNotEmpty, IsString, ValidateNested } from "class-validator";
-import { i18nValidationMessage } from "nestjs-i18n";
-import { CreatePassenger } from "src/passenger/dto/create-passenger.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { ArrayNotEmpty, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
+import { CreatePassenger } from 'src/passenger/dto/create-passenger.dto';
 
 export class PassengerBookingInfo {
   @ApiProperty({ example: 'P12345', description: 'Passenger ID' })

@@ -3,8 +3,6 @@ import { relations, sql } from 'drizzle-orm';
 import { trains } from '../../trains/schemas/train.schema';
 import { tickets } from '../../tickets/schemas/tickets.schema';
 
-
-
 export const seats = pgTable(
   'seats',
   {

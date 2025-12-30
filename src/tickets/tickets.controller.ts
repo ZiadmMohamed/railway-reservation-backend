@@ -14,9 +14,14 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { TicketsService } from './tickets.service';
 
-
 import { PaginationQueryParams } from '../common/dtos/pagination.query-params.dto';
-import { AllowAnonymous, AuthGuard, Roles, Session, UserSession } from '@thallesp/nestjs-better-auth';
+import {
+  AllowAnonymous,
+  AuthGuard,
+  Roles,
+  Session,
+  UserSession,
+} from '@thallesp/nestjs-better-auth';
 import { BookTicketsDto } from './dto/create-booking,dto';
 
 @ApiTags('Tickets')
@@ -29,12 +34,8 @@ export class TicketsController {
   @UseGuards(AuthGuard)
   @Roles(['admin', 'user'])
   // @AllowAnonymous()
-  async createTickets(
-    @Body() bookTicketsDto: BookTicketsDto,
-    @Session() session: UserSession,
-  ) {
+  async createTickets(@Body() bookTicketsDto: BookTicketsDto, @Session() session: UserSession) {
     // return this.TicketsService.bookTickets(bookTicketsDto, session.user.id);
     return this.TicketsService.bookTickets(bookTicketsDto);
   }
-  
 }
