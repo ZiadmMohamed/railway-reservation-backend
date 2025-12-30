@@ -3,7 +3,7 @@ import { relations, sql } from 'drizzle-orm';
 import { trains } from '../../trains/schemas/train.schema';
 import { tickets } from '../../tickets/schemas/tickets.schema';
 
-export const seatClassEnum = pgEnum('seat_class', ['First', 'Economy', 'Business']);
+
 
 export const seats = pgTable(
   'seats',
@@ -16,7 +16,6 @@ export const seats = pgTable(
       .references(() => trains.id, { onDelete: 'cascade' }),
     coachNumber: integer('coach_number').notNull(),
     seatNumber: integer('seat_number').notNull(),
-    class: seatClassEnum('class').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
