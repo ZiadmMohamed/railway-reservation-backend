@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { tickets } from 'src/tickets/schemas/tickets.schema';
 import { DB } from 'src/database/drizzle';
 import { InjectDb } from 'src/database/db.provider';
@@ -8,10 +8,10 @@ import { seats } from 'src/database/schemas';
 @Injectable()
 export class TicketsRepository {
   constructor(@InjectDb() private readonly db: DB) {}
-  
+
   async findMany(condition?: any) {
     const query = this.db.select().from(seats);
-    
+
     if (condition) {
       query.where(condition);
     }
@@ -29,21 +29,20 @@ export class TicketsRepository {
     const bookedIdsArray = bookedSeatRows.map(b => b.seatId).filter(Boolean);
 
     // fetch all seats for the train
-    const allSeats = await this.db
-      .select()
-      .from(seats)
-      .where(eq(seats.trainId, trainId));
+    const allSeats = await this.db.select().from(seats).where(eq(seats.trainId, trainId));
 
     // sort in JS: first by coachNumber, then by seatNumber
     allSeats.sort((a, b) => {
-      const ac = a.coachNumber, bc = b.coachNumber;
+      const ac = a.coachNumber,
+        bc = b.coachNumber;
       const coachCompare =
         typeof ac === 'number' && typeof bc === 'number'
           ? ac - bc
           : String(ac).localeCompare(String(bc));
       if (coachCompare !== 0) return coachCompare;
 
-      const asn = a.seatNumber, bsn = b.seatNumber;
+      const asn = a.seatNumber,
+        bsn = b.seatNumber;
       return typeof asn === 'number' && typeof bsn === 'number'
         ? asn - bsn
         : String(asn).localeCompare(String(bsn));
@@ -56,5 +55,24 @@ export class TicketsRepository {
 
   async insertMany(ticketsToInsert: any[]) {
     return this.db.insert(tickets).values(ticketsToInsert).returning();
+  }
+
+  async findUnassignedTickets(tripId: string) {
+    return this.db
+      .select()
+      .from(tickets)
+      .where(and(eq(tickets.tripId, tripId), eq(tickets.passengerId, null)));
+  }
+
+  async assignPassengersToTickets(ticketsToAssign: any[], passengers: any[]) {
+    const updates = ticketsToAssign.map((ticket, index) =>
+      this.db
+        .update(tickets)
+        .set({ passengerId: passengers[index].passengerId })
+        .where(eq(tickets.id, ticket.id))
+        .returning(),
+    );
+
+    return Promise.all(updates);
   }
 }

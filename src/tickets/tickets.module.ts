@@ -5,7 +5,6 @@ import { PassengerRepository } from 'src/passenger/repositories/passenger.reposi
 import { TicketsRepository } from './repository/tickets.repository';
 import { TripsRepo } from 'src/trips/repository/trips.repo';
 
-
 @Module({
   controllers: [TicketsController],
   providers: [TicketsService, PassengerRepository, TicketsRepository, TripsRepo],

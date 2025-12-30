@@ -1,9 +1,7 @@
-import { pgTable, uuid, integer, pgEnum, timestamp, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, timestamp, unique } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 import { trains } from '../../trains/schemas/train.schema';
 import { tickets } from '../../tickets/schemas/tickets.schema';
-
-
 
 export const seats = pgTable(
   'seats',
