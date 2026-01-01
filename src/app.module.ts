@@ -21,6 +21,8 @@ import { TripStopsModule } from './trip-stops/trip-stops.module';
 import { TicketsModule } from './tickets/tickets.module';
 import * as path from 'path';
 import { TrainsModule } from './trains/trains.module';
+import { PaymentModule } from './payment/payment.module';
+import { CardModule } from './card/card.module';
 
 @Module({
   imports: [
@@ -69,6 +71,8 @@ import { TrainsModule } from './trains/trains.module';
     TripStopsModule,
     TicketsModule,
     TrainsModule,
+    PaymentModule,
+    CardModule,
   ],
 
   controllers: [AppController],

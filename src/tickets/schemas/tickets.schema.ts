@@ -1,4 +1,4 @@
-import { pgTable, uuid, numeric, pgEnum, timestamp, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, numeric, pgEnum, timestamp, unique, text } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 import { passengers } from '../../passenger/schemas/passenger.schema';
 import { seats } from '../../seats/schemas/seats.schema';
@@ -9,6 +9,7 @@ export const ticketStatusEnum = pgEnum('ticket_status', ['Booked', 'Cancelled', 
 export const tickets = pgTable(
   'tickets',
   {
+    paymentIntentId: text('payment_intent_id'),
     id: uuid('id')
       .primaryKey()
       .default(sql`gen_random_uuid()`),
