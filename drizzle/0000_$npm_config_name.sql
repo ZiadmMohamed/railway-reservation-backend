@@ -133,6 +133,7 @@ CREATE TABLE "trip_stops" (
 );
 --> statement-breakpoint
 CREATE TABLE "tickets" (
+	"payment_intent_id" text,
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"passenger_id" uuid NOT NULL,
 	"seat_id" uuid NOT NULL,

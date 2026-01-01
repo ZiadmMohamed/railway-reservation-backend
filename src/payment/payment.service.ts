@@ -1,16 +1,19 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import Stripe from 'stripe';
-import { Request } from 'express';
 import { InjectDb } from 'src/database/db.provider';
 import { DB } from 'src/database/drizzle';
 import { user } from 'src/database/schemas';
 import { eq } from 'drizzle-orm';
 import { userCards } from 'src/database/schemas';
+import { TicketsRepository } from 'src/tickets/repository/tickets.repository';
 
 @Injectable()
 export class PaymentService {
   private stripe: Stripe;
-  constructor(@InjectDb() private readonly db: DB) {
+  constructor(
+    @InjectDb() private readonly db: DB,
+    private readonly ticketRepo: TicketsRepository,
+  ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
   }
 
@@ -107,18 +110,20 @@ export class PaymentService {
     // Handle Stripe event (e.g., payment success)
     if (event.type != 'checkout.session.completed') {
       // check if the payment failed
-      // await   this.orderRepo.updateOne({_id:event.data.object["metadata"].orderId,status:OrderStatus.pending},{status:OrderStatus.canceled,rejectedReason:"fail to pay"})
+      await this.ticketRepo.updateTicket(event.data.object['metadata'].ticketId, {
+        status: 'Cancelled',
+      });
 
       throw new BadRequestException('fail to pay');
     }
     //   check the booking
-    //   const order=await this.orderRepo.findOne({_id:event.data.object["metadata"]?.orderId})
-    //   if(!order){
-    //     throw new NotFoundException("order id is not avaialbe")
-    //   }
+    const ticket = await this.ticketRepo.findOne(event.data.object['metadata']?.ticketId);
+    if (!ticket) {
+      throw new NotFoundException('ticket id is not avaialbe');
+    }
     // change status of booking
-    //   await this.confirmPaymenIntent(order.intentId)
-    // await   this.orderRepo.updateOne({_id:event.data.object.metadata?.orderId,status:OrderStatus.pending},{status:OrderStatus.placed,paidAt:Date.now()})
+    await this.confirmPaymenIntent(ticket.id);
+    await this.ticketRepo.updateTicket(event.data.object.metadata?.ticketId, { status: 'Booked' });
 
     const session = event.data.object as Stripe.Checkout.Session;
     console.log('session', session);
