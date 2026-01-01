@@ -9,24 +9,23 @@ import { seats } from 'src/database/schemas';
 export class TicketsRepository {
   constructor(@InjectDb() private readonly db: DB) {}
 
-
-async findOne(ticketId: string,userId?:string) {
-  //   if (!userId || !ticketId) {
-  //   throw new BadRequestException('userid or ticket id is not exist');
-  // }
+  async findOne(ticketId: string, userId?: string) {
+    //   if (!userId || !ticketId) {
+    //   throw new BadRequestException('userid or ticket id is not exist');
+    // }
 
     const ticket = await this.db
       .select()
       .from(tickets)
       .where(or(eq(tickets.id, ticketId), eq(tickets.passengerId, userId)))
-      .limit(1);  
-      if (!ticket[0]) {
-    throw new NotFoundException('ticket is not found');
-  }      
+      .limit(1);
+    if (!ticket[0]) {
+      throw new NotFoundException('ticket is not found');
+    }
     return ticket[0];
-}
+  }
 
-async updateTicket(ticketId: string, data:any) {
+  async updateTicket(ticketId: string, data: any) {
     const updatedTicket = await this.db
       .update(tickets)
       .set(data)
@@ -34,7 +33,7 @@ async updateTicket(ticketId: string, data:any) {
       .returning();
 
     return updatedTicket[0];
-  }     
+  }
 
   async findMany(condition?: any) {
     const query = this.db.select().from(seats);

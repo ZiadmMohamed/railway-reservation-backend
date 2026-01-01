@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { TicketsRepository } from 'src/tickets/repository/tickets.repository';
+import { TicketsModule } from 'src/tickets/tickets.module';
 
 @Module({
-  imports:[TicketsRepository],
+  imports: [forwardRef(() => TicketsModule)],
   exports: [PaymentService],
   providers: [PaymentService],
 })

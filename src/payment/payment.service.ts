@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import Stripe from 'stripe';
 import { InjectDb } from 'src/database/db.provider';
 import { DB } from 'src/database/drizzle';
@@ -12,6 +12,7 @@ export class PaymentService {
   private stripe: Stripe;
   constructor(
     @InjectDb() private readonly db: DB,
+    @Inject(forwardRef(() => TicketsRepository))
     private readonly ticketRepo: TicketsRepository,
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
