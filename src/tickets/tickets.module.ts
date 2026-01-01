@@ -6,7 +6,7 @@ import { PaymentService } from 'src/payment/payment.service';
 import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
-  providers: [TicketsService,TicketsRepository,PaymentService],
+  providers: [TicketsService, TicketsRepository, PaymentService],
   imports: [PaymentModule],
   controllers: [TicketsController],
 })
