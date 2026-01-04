@@ -9,6 +9,12 @@ import { BookTicketsDto } from './dto/create-booking,dto';
 export class TicketsController {
   constructor(private readonly TicketsService: TicketsService) {}
 
+  @Post('createTickets')
+  @Roles(['admin'])
+  async createTicketsAdmin(@Body() bookTicketsDto: BookTicketsDto, @Session() session: UserSession) {
+    return this.TicketsService.bookTickets(bookTicketsDto, session.user.id);
+  }
+
   @Post('book')
   @Roles(['admin', 'user'])
   async createTickets(@Body() bookTicketsDto: BookTicketsDto, @Session() session: UserSession) {

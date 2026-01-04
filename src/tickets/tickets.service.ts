@@ -13,13 +13,12 @@ export class TicketsService {
   ) {}
 
   async bookTickets(dto: BookTicketsDto, userId: string) {
-    dto.passengers.forEach(async item => {
-      // 1️⃣ check passenger exists & belongs to user
-      const passenger = await this.passengerRepository.findOne(item.passengerId, userId);
+    for (const passengerId of dto.passengers) {
+      const passenger = await this.passengerRepository.findOne(passengerId, userId);
       if (!passenger) {
         throw new NotFoundException('Passenger not found');
       }
-    });
+    }
 
     // 2️⃣ Check if trip exists
     const trip = await this.tripsRepo.findOne(dto.tripId);

@@ -19,43 +19,6 @@ export class TicketsRepository {
     return query;
   }
 
-  async findAvailableSeats(tripId: string, trainId: string) {
-    // get booked seat ids for the trip
-    const bookedSeatRows = await this.db
-      .select({ seatId: tickets.seatId })
-      .from(tickets)
-      .where(eq(tickets.tripId, tripId));
-
-    const bookedIdsArray = bookedSeatRows.map(b => b.seatId).filter(Boolean);
-
-    // fetch all seats for the train
-    const allSeats = await this.db.select().from(seats).where(eq(seats.trainId, trainId));
-
-    // sort in JS: first by coachNumber, then by seatNumber
-    allSeats.sort((a, b) => {
-      const ac = a.coachNumber,
-        bc = b.coachNumber;
-      const coachCompare =
-        typeof ac === 'number' && typeof bc === 'number'
-          ? ac - bc
-          : String(ac).localeCompare(String(bc));
-      if (coachCompare !== 0) return coachCompare;
-
-      const asn = a.seatNumber,
-        bsn = b.seatNumber;
-      return typeof asn === 'number' && typeof bsn === 'number'
-        ? asn - bsn
-        : String(asn).localeCompare(String(bsn));
-    });
-
-    // filter out booked seats in JS
-    if (bookedIdsArray.length === 0) return allSeats;
-    return allSeats.filter(s => !bookedIdsArray.includes(s.id));
-  }
-
-  async insertMany(ticketsToInsert: any[]) {
-    return this.db.insert(tickets).values(ticketsToInsert).returning();
-  }
 
   async findUnassignedTickets(tripId: string) {
     return this.db
@@ -64,11 +27,14 @@ export class TicketsRepository {
       .where(and(eq(tickets.tripId, tripId), eq(tickets.passengerId, null)));
   }
 
-  async assignPassengersToTickets(ticketsToAssign: any[], passengers: any[]) {
+  async assignPassengersToTickets(
+    ticketsToAssign: any[],
+    passengers: string[],
+  ) {
     const updates = ticketsToAssign.map((ticket, index) =>
       this.db
         .update(tickets)
-        .set({ passengerId: passengers[index].passengerId })
+        .set({ passengerId: passengers[index] })
         .where(eq(tickets.id, ticket.id))
         .returning(),
     );
