@@ -11,7 +11,10 @@ export class TicketsController {
 
   @Post('createTickets')
   @Roles(['admin'])
-  async createTicketsAdmin(@Body() bookTicketsDto: BookTicketsDto, @Session() session: UserSession) {
+  async createTicketsAdmin(
+    @Body() bookTicketsDto: BookTicketsDto,
+    @Session() session: UserSession,
+  ) {
     return this.TicketsService.bookTickets(bookTicketsDto, session.user.id);
   }
 
