@@ -12,5 +12,4 @@ export class BookTicketsDto {
   @ArrayNotEmpty({ message: i18nValidationMessage('validation.required') })
   @IsUUID('4', { each: true })
   passengers: string[];
-
 }

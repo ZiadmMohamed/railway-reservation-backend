@@ -19,7 +19,6 @@ export class TicketsRepository {
     return query;
   }
 
-
   async findUnassignedTickets(tripId: string) {
     return this.db
       .select()
@@ -27,10 +26,7 @@ export class TicketsRepository {
       .where(and(eq(tickets.tripId, tripId), eq(tickets.passengerId, null)));
   }
 
-  async assignPassengersToTickets(
-    ticketsToAssign: any[],
-    passengers: string[],
-  ) {
+  async assignPassengersToTickets(ticketsToAssign: any[], passengers: string[]) {
     const updates = ticketsToAssign.map((ticket, index) =>
       this.db
         .update(tickets)
