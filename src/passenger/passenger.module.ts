@@ -6,6 +6,6 @@ import { PassengerRepository } from './repositories/passenger.repository';
 @Module({
   controllers: [PassengerController],
   providers: [PassengerService, PassengerRepository],
-  exports: [PassengerService],
+  exports: [PassengerService, PassengerRepository],
 })
 export class PassengerModule {}
