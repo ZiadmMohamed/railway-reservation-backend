@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { OnboardingService } from './onboarding.service';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
@@ -14,5 +14,11 @@ export class OnboardingController {
   @Get('languages')
   async getSupportedLanguages() {
     return this.onboardingService.getSupportedLanguages();
+  }
+
+  @AllowAnonymous()
+  @Get('screens')
+  async getScreens(@Query('lang') lang: string = 'en') {
+    return this.onboardingService.getScreens(lang);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { supportedLanguages } from '../../database/schemas/supported-languages.schema';
+import { supportedLanguages } from '../Schemas/supported-languages.schema';
 import { DB } from '../../database/drizzle';
 import { InjectDb } from '../../database/db.provider';
 
